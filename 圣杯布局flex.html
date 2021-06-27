@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <style>
+    body{
+        display: flex;
+        flex-direction: column;
+    }
+    #header,#footer{
+        flex: 0 0 50px;
+        background-color: hotpink;
+    }
+
+    #center {
+        flex:1;
+        display: flex;
+    }
+
+    #dyleft{
+        flex: 0 0 180px;
+        order: -1;
+        height:100px;
+        background-color: #0c9;
+    }
+
+    #dyright {
+        flex: 0 0 200px;
+        height:100px;
+        background-color: #0c9;
+    }
+
+    #dycenter {
+        flex:1;
+        height:100px;
+        background-color: yellow;
+    }
+    </style>
+    <body>
+        <div id="header">头部</div>
+        <div id="center">
+            <div id="dycenter">dycenter</div>
+            <div id="dyleft">左栏div</div>
+            <div id="dyright">右栏divx</div>
+        </div>
+        <div id="footer">尾部</div>
+    </body>
+</html>

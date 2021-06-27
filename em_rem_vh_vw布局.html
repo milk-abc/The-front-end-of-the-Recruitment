@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        .p1 {font-size: 16px; line-height: 32px;}
+        .p1-1 {font-size: 2em;}
+        .p1-2 {font-size: 2em; line-height: 2em;}
+        .p2 {font-size: 16px; line-height: 2;}
+        .p2-1 {font-size: 2em;}
+        .p2-2 {font-size: 2em; line-height: 2em;}
+        .p3{width: 50vw;height: 20vh;background-color: hotpink;}
+    </style>
+    <body>
+        <div class="p1">
+            <!-- 继承p1的font-size:16px，计算2em=2*16=32px；
+            继承p1的line-height:32px -->
+            <div class="p1-1">1</div>
+            <!-- 继承p1的font-size:16px，计算2em=2*16=32px；
+            相对父元素的line-height:32px，得2em*32=64px -->
+            <div class="p1-2">1</div>
+        </div>
+        <!-- p2的font-size:16px；计算line-height:2*16=32px，line-height无单位时相对自己字体大小 -->
+        <div class="p2">
+    <!-- 继承p2的font-size:16px，计算2em=2*16=32px；
+        继承的line-height:2，计算line-height为2*32=64，无单位时相对自己字体大小 -->
+            <div class="p2-1">1</div>
+    <!-- 继承p2的font-size:16px，计算2em=2*16=32px；
+        相对于父元素的line-height:32px，得2em*32=64px，有单位em时相对父元素line-height大小 -->
+            <div class="p2-2">1</div>
+        </div>
+        <!-- vw,vh会随着视口大小改变来实现响应式布局,1vw相当于视口的1%，可以缩小窗口查看是否随视口大小更改-->
+        <div class="p3">
+            3
+        </div>
+    </body>
+</html>

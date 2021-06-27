@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div id="test-div">
+            <div class="c-red">
+                <p id="test-p">JavaScript</p>
+                <p>Java</p>
+            </div>
+            <div class="c-red c-green">
+                <p>Python</p>
+                <p>Ruby</p>
+                <p>Swift</p>
+            </div>
+            <div class="c-green">
+                <p>Scheme</p>
+                <p>Haskell</p>
+            </div>
+        </div>
+    </body>
+    <script>
+        let ans1=document.getElementById('test-p');
+        console.log('ans1',ans1);
+        let ans2=document.querySelectorAll('.c-red.c-green>p');
+        for(let item of ans2){
+            console.log('ans2',item);
+        }
+        //一般不用lastChild,childNodes,nextSibling等不含element的，会包括text文本节点
+        let ans3=document.querySelector('#test-div').lastElementChild.children;
+        for(let item of ans3){
+            console.log('ans3',item);
+        }
+        let newnode=document.createElement('p');
+        newnode.innerText='newnode';
+        ans1.appendChild(newnode);
+        console.log(ans1)
+    </script>
+</html>

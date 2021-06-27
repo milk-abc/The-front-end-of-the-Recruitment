@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    /* animation通过keyframes进行变换,transition通过伪类的变化进行动画 */
+    p {
+      /* 指定由@keyframes描述的关键帧名称 */
+      animation-name: slidein;
+      /* 动画时长 */
+      animation-duration: 3s;
+      /* 规定动画的速度曲线 */
+      animation-timing-function: linear;
+      /* 规定动画开始之前的延迟 */
+      animation-delay: 0s;
+      /* 动画重复的次数 */
+      animation-iteration-count: infinite;
+      /* 是否应该轮流反向播放动画 */
+      animation-direction: alternate;
+    }
+    div {
+      width: 200px;
+      height: 200px;
+      background-image: url('1.jpg');
+      background-size: 100% 100%;
+      animation: box 5s linear infinite;
+    }
+    /* 每一个关键帧描述了动画元素在给定的时间点上应该如何渲染 */
+    @keyframes box {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <body>
+    <div></div>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- 鼠标不断点击触发，mousedown(单位时间内只触发一次)
+监听滚动事件，比如是否滑到底部自动加载更多，用throttle来判断 -->
+<html>
+    <body>
+        <input id="btn" type="button" value="clickme">
+    </body>
+    <script>
+        function debounce(fn,delay){
+            let timer=null;
+            return function(){
+                if(timer){
+                    return;
+                }
+                timer=setTimeout(()=>{
+                    fn(...arguments);
+                    timer=null;
+                },delay)
+            }
+        }
+        function sayHi(){
+            console.log('hi');
+        }
+        let btn=document.getElementById("btn");
+        btn.addEventListener("click",debounce(sayHi,500));
+    </script>
+</html>

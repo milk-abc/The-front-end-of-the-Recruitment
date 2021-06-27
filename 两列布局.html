@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <!-- 根元素html,float不为none,overflow不为visible,postion为absolute/fixed
+  display为flex,table,inline-block,grid -->
+  <style>
+    /* .parent {
+      display: flex;
+    }
+    .left {
+      margin-right: 20px;
+      width: 200px;
+    }
+    .right {
+      flex: 1;
+    } */
+    .parent {
+      height: 200px;
+    }
+    .left {
+      float: left;
+      width: 200px;
+      margin-right: 20px;
+      height: 100%;
+      background-color: green;
+    }
+    .right {
+      overflow: hidden;
+      height: 100%;
+      background-color: hotpink;
+    }
+  </style>
+  <body>
+    <div class="parent">
+      <div class="left">left</div>
+      <div class="right">right</div>
+    </div>
+  </body>
+</html>
