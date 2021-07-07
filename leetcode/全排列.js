@@ -1,26 +1,20 @@
-var permuteUnique = function(nums) {
-    let n=nums.length,res=[],visited=[],temp;
-    nums.sort()
-    let dfs=function(path,index){
-        // console.log(index,path)
-        if(path.length==n){
-            res.push(path.slice());
-            return
-        }
-        for(let i=0;i<n;i++){
-            if(visited.includes(i)){
-                continue
-            }
-            if(i>0&&nums[i-1]==nums[i]&&!visited.includes(i-1)){
-                continue
-            }
-            path.push(nums[i])
-            visited.push(i)
-            dfs(path,i+1)
-            path.pop()
-            visited.pop()
-        }
+var permute = function (nums) {
+  let results = [];
+  let vis = new Set();
+  let dfs = function (path, nums) {
+    if (path.length === nums.length) {
+      results.push([...path]);
     }
-    dfs([],0)
-    return res
+    for (let i = 0; i < nums.length; i++) {
+      if (!vis.has(nums[i])) {
+        path.push(nums[i]);
+        vis.add(nums[i]);
+        dfs(path, nums);
+        path.pop();
+        vis.delete(nums[i]);
+      }
+    }
+  };
+  dfs([], nums);
+  return results;
 };
