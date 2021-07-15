@@ -1,8 +1,54 @@
-class Observer {
-  constructor(data) {
-    this.Observer(data);
+//观察者(发布订阅模式) 观察者 被观察者
+class Dep {
+  //通知所有观察者更新数据
+  constructor() {
+    this.subs = []; //放所有watcher
   }
-  Observer(data) {
+  //订阅
+  addSub(watcher) {
+    //添加watcher
+    this.subs.push(watcher);
+  }
+  //发布
+  notify() {
+    this.subs.forEach((watcher) => watcher.update());
+  }
+}
+
+//new Watcher 会获取值
+class Watcher {
+  constructor(vm, expr, cb) {
+    this.vm = vm;
+    this.expr = expr;
+    this.cb = cb;
+    //默认先存放一个老数据
+    this.oldValue = this.get();
+  }
+  get() {
+    //vm.$data.school vm.$data.school.name
+    //获取值会调用get方法
+    Dep.target = this; //就是watcher
+    //取值 把这个观察者和数据关联起来
+    let value = CompilerUtil.getVal(this.vm, this.expr);
+    Dep.target = null;
+    return value;
+  }
+  update() {
+    //更新操作 数据变化后 会调用观察者的update方法
+    let newValue = CompilerUtil.getVal(this.vm, this.expr);
+    if (newValue !== this.oldValue) {
+      this.cb(newValue);
+    }
+  }
+}
+// vm.$watch(vm, "school.name", (newValue) => {});
+
+class Observer {
+  //实现数据劫持功能
+  constructor(data) {
+    this.observer(data);
+  }
+  observer(data) {
     if (data && typeof data == "object") {
       //如果是对象才观察
       for (let key in data) {
@@ -11,16 +57,20 @@ class Observer {
     }
   }
   defineReactive(obj, key, value) {
-    this.Observer(value);
+    this.observer(value);
+    let dep = new Dep(); //给每一个属性都加上一个具有发布订阅的功能
     Object.defineProperty(obj, key, {
       get() {
+        //创建watcher时 会取到对应的内容，并且把watcher放到了全局上
+        Dep.target && dep.addSub(Dep.target);
         return value;
       },
       set: (newValue) => {
         //{school:{name:'珠峰'}} school={}
         if (newValue !== value) {
-          this.Observer(newVal);
+          this.observer(newValue);
           value = newValue;
+          dep.notify();
         }
       },
     });
@@ -102,7 +152,7 @@ class Compiler {
 CompilerUtil = {
   getVal(vm, expr) {
     //根据表达式取到对应的数据
-    return expr.split(".").reduce((data, current, index, arr) => {
+    return expr.split(".").reduce((data, current) => {
       return data[current];
     }, vm.$data);
   },
@@ -110,13 +160,28 @@ CompilerUtil = {
     //node是节点 expr是表达式 vm是当前实例
     //给输入框赋予value属性
     let fn = this.updater["modelUpdater"];
+    new Watcher(vm, expr, (newVal) => {
+      //给输入框加一个观察者 数据更新了会触发此方法
+      fn(node, newVal);
+    });
     let value = this.getVal(vm, expr);
     fn(node, value);
+  },
+  getContentValue(vm, expr) {
+    //遍历表达式 将内容重新替换成一个完整的内容 返还回去
+    //{{a}}  {{b}} => [a',b']
+    return expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      return this.getVal(vm, args[1]);
+    });
   },
   text(node, expr, vm) {
     //expr=>{{a}} {{b}} {{c}}
     let fn = this.updater["textUpdater"];
     let content = expr.replace(/\{\{(.+?)\}\}/g, (...args) => {
+      //给表达式每个{{}}都加上观察者
+      new Watcher(vm, args[1], () => {
+        fn(node, this.getContentValue(vm, expr));
+      });
       return this.getVal(vm, args[1]);
     });
     fn(node, content);
