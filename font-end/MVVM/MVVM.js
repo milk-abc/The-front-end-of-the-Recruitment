@@ -1,3 +1,32 @@
+class Observer {
+  constructor(data) {
+    this.Observer(data);
+  }
+  Observer(data) {
+    if (data && typeof data == "object") {
+      //如果是对象才观察
+      for (let key in data) {
+        this.defineReactive(data, key, data[key]);
+      }
+    }
+  }
+  defineReactive(obj, key, value) {
+    this.Observer(value);
+    Object.defineProperty(obj, key, {
+      get() {
+        return value;
+      },
+      set: (newValue) => {
+        //{school:{name:'珠峰'}} school={}
+        if (newValue !== value) {
+          this.Observer(newVal);
+          value = newValue;
+        }
+      },
+    });
+  }
+}
+
 class Compiler {
   constructor(el, vm) {
     //判断el属性是不是一个元素，如果不是元素，那就获取他
@@ -108,6 +137,9 @@ class Vue {
     this.$el = options.el;
     this.$data = options.data;
     if (this.$el) {
+      //把数据全部转化成用Object.defineProperty来定义
+      new Observer(this.$data);
+      console.log(this.$data);
       new Compiler(this.$el, this);
     }
   }
