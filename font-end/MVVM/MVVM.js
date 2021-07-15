@@ -105,10 +105,11 @@ class Compiler {
       let { name, value: expr } = attr;
       //判断是不是指令
       if (this.isDirective(name)) {
-        //v-model v-html v-bind v-on
+        //v-model v-html v-bind v-on:click
         let [, directive] = name.split("-");
+        let [directiveName, eventName] = directive.split(":");
         //需要调用不同的指令来处理
-        CompilerUtil[directive](node, expr, this.vm);
+        CompilerUtil[directiveName](node, expr, this.vm, eventName);
       }
     });
   }
@@ -152,7 +153,20 @@ class Compiler {
 CompilerUtil = {
   getVal(vm, expr) {
     //根据表达式取到对应的数据
+    let arr = expr.split(".");
+    if (arr.length === 1) {
+      return vm.$data[expr];
+    }
     return expr.split(".").reduce((data, current) => {
+      return data[current];
+    }, vm.$data);
+  },
+  setValue(vm, expr, value) {
+    //vm.$data school.name='rr'
+    expr.split(".").reduce((data, current, index, arr) => {
+      if (index == arr.length - 1) {
+        return (data[current] = value);
+      }
       return data[current];
     }, vm.$data);
   },
@@ -163,6 +177,10 @@ CompilerUtil = {
     new Watcher(vm, expr, (newVal) => {
       //给输入框加一个观察者 数据更新了会触发此方法
       fn(node, newVal);
+    });
+    node.addEventListener("input", (e) => {
+      let value = e.target.value;
+      this.setValue(vm, expr, value);
     });
     let value = this.getVal(vm, expr);
     fn(node, value);
@@ -186,6 +204,11 @@ CompilerUtil = {
     });
     fn(node, content);
   },
+  on(node, expr, vm, eventName) {
+    node.addEventListener(eventName, (e) => {
+      vm[expr].call(vm, e);
+    });
+  },
   updater: {
     //把数据插入到节点中
     modelUpdater(node, value) {
@@ -201,11 +224,44 @@ class Vue {
   constructor(options) {
     this.$el = options.el;
     this.$data = options.data;
+    let computed = options.computed;
+    let methods = options.methods;
     if (this.$el) {
       //把数据全部转化成用Object.defineProperty来定义
       new Observer(this.$data);
-      console.log(this.$data);
+      //将数据获取操作 vm上的取值操作 都代理到 vm.$data
+
+      for (let key in computed) {
+        //有依赖关系 vm.$data.getNewName
+        Object.defineProperty(this.$data, key, {
+          get: () => {
+            return computed[key].call(this);
+          },
+        });
+      }
+      for (let key in methods) {
+        //有依赖关系 vm.$data.getNewName
+        Object.defineProperty(this, key, {
+          get: () => {
+            return methods[key].call(this);
+          },
+        });
+      }
+      this.proxyVm(this.$data);
       new Compiler(this.$el, this);
+    }
+  }
+  proxyVm(data) {
+    for (let key in data) {
+      //{school:{name,age}}
+      Object.defineProperty(this, key, {
+        get() {
+          return data[key]; //实现可以通过vm获取到对应的内容
+        },
+        set(newValue) {
+          data[key] = newValue;
+        },
+      });
     }
   }
 }

@@ -8,6 +8,9 @@
       <input type="text" v-model="school.name" />
       <div>{{school.name}}</div>
       <div>{{school.age}}</div>
+      <!-- 如果数据不变化，视图就不会刷新 -->
+      {{getNewName}}
+      <button v-on:click="change">更新操作</button>
     </div>
     <script src="MVVM.js"></script>
     <script>
@@ -17,6 +20,16 @@
           school: {
             name: "珠峰",
             age: 10,
+          },
+        },
+        computed: {
+          getNewName() {
+            return this.school.name + "架构";
+          },
+        },
+        methods: {
+          change() {
+            this.school.name = "降温";
           },
         },
       });
