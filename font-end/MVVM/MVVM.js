@@ -240,10 +240,10 @@ class Vue {
         });
       }
       for (let key in methods) {
-        //有依赖关系 vm.$data.getNewName
+        console.log("key", methods[key]);
         Object.defineProperty(this, key, {
-          get: () => {
-            return methods[key].call(this);
+          get() {
+            return methods[key];
           },
         });
       }
