@@ -1,0 +1,51 @@
+ab 
+
+abcde
+
+de cd bc ab
+cde bcd abc
+bcde abcd
+abcde
+
+n = 5
+
+span = 2;i = 0  
+j = 1
+
+
+
+
+abcde 
+ab bc cd de
+abc bcd cde
+abcd bcde 
+abcde
+
+i = 0; j = 4   i + 子串的长度 - 1
+
+i = 0, j = 1;;;;
+
+i, j     总长度：span
+for(int span = 2; span <= n; span++)
+	for(int i = 0; i <= n - span; i++){
+		 int j = i + span - 1
+	}
+官方题解的
+---------------------------------------------------------------
+abcde
+
+dp[abc] = dp[ab] + 1  or   dp[bc] + 1
+java题
+ab
+bc  abc
+cd bcd abcd
+de cde bcde abcde
+
+保持j不变  
+
+ab  
+bc abc
+
+
+
+
