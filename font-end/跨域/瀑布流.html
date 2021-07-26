@@ -1,0 +1,135 @@
+<!-- left=i*(itemLeft+padding) -->
+<!DOCTYPE html>
+<html>
+  <style>
+    img {
+      width: 220px;
+      /* display: block; */
+    }
+    .item {
+      position: absolute;
+    }
+  </style>
+  <body>
+    <div id="box">
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/a6/cd/0a/a6cd0a15d5b2909539dd7944201127d2.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/d7/fb/60/d7fb60b2321149a83ab5dbe94744ced6.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+      <div class="item">
+        <img
+          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+        />
+      </div>
+    </div>
+    <script>
+      var box = document.getElementById("box");
+      var items = box.children;
+      var gap = 10;
+      window.onload = function () {
+        waterFall();
+        function waterFall() {
+          var pageWidth = getClient().width;
+          var itemWidth = items[0].offsetWidth;
+          var columns = parseInt(pageWidth / (itemWidth + gap));
+          var arr = [];
+          for (let i = 0; i < items.length; i++) {
+            if (i < columns) {
+              //第一行
+              items[i].style.top = 0;
+              items[i].style.left = (itemWidth + gap) * i + "px";
+              arr.push(items[i].offsetHeight);
+            } else {
+              //其他行
+              //找到第一行的最小高度和最小的索引
+              var minHeight = arr[0];
+              var index = 0;
+              for (let j = 0; j < arr.length; j++) {
+                if (minHeight > arr[j]) {
+                  minHeight = arr[j];
+                  index = j;
+                }
+              }
+              //做什么
+              //设置下一行第一个盒子的位置 第一张图片的位置
+              items[i].style.top = arr[index] + gap + "px";
+              //left
+              items[i].style.left = items[index].offsetLeft + "px";
+              arr[index] += items[i].offsetHeight + gap;
+            }
+          }
+        }
+      };
+      window.onscroll = function () {
+        //加载图片
+        if (
+          getClient().height + getScrollTop() >=
+          items[items.length - 1].offsetTop
+        ) {
+        }
+      };
+      //兼容
+      function getClient() {
+        return {
+          width:
+            window.innerWidth ||
+            document.documentElement.clientWidth ||
+            document.body.clientWidth,
+          height:
+            window.innerHeight ||
+            document.documentElement.clientHeight ||
+            document.body.clientHeight,
+        };
+      }
+      function getScrollTop() {
+        return window.pageYOffset || document.documentElement.scrollTop;
+      }
+    </script>
+  </body>
+</html>

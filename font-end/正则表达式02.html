@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>正则</title>
+  </head>
+  <body>
+    <div class="content">hahah</div>
+  </body>
+  <script>
+    window.location.search = "?name=oo&age=17";
+    let getQueryStringArgs = function () {
+      let qs = location.search.length > 0 ? location.search.substring(1) : "";
+      let args = {};
+      let div = document.querySelector("div");
+      let arr = qs.split("&").map((kv) => kv.split("="));
+      for (let item of arr) {
+        let name = decodeURIComponent(item[0]),
+          value = decodeURIComponent(item[1]);
+        if (name.length) {
+          args[name] = value;
+        }
+      }
+      return args;
+    };
+    let args = getQueryStringArgs();
+    console.log(args);
+  </script>
+</html>

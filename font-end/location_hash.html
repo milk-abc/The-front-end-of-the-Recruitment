@@ -1,0 +1,65 @@
+<!-- 1.如果location.hash发生了变化，那么浏览器地址栏url会发生变化，而且浏览器会产生1个历史记录。
+
+2.如果location.hash发生了变化，会产生一个hashchange事件，我们可以处理这个事件。 -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      a {
+        color: red;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <a data-href="/post">post</a>
+    <a data-href="/login">login</a>
+    <script>
+      const Router = [];
+      const addRoute = (path = "", handle = () => {}) => {
+        let obj = {
+          path,
+          handle,
+        };
+        Router.push(obj);
+      };
+      // 添加路由定义
+      addRoute("/post", function () {
+        // todo...
+        alert("/post");
+      });
+      addRoute("/login", function () {
+        // todo...
+        alert("login");
+      });
+      // 路由处理
+      const routeHandle = (path) => {
+        for (var item of Router) {
+          if (item.path === path) {
+            item.handle.apply(null, [path]);
+            return true;
+          }
+        }
+      };
+      document.addEventListener("click", function (e) {
+        let dataset = e.target.dataset;
+        if (dataset) {
+          if (routeHandle(dataset.href)) {
+            var url = window.location.href;
+            history.pushState(
+              { route: dataset.href },
+              null,
+              oriUrl + dataset.href
+            );
+            //阻止默认行为
+            return false;
+            // e.preventDefault();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
