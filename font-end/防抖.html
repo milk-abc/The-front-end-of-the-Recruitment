@@ -1,20 +1,24 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        <input id="btn" type="button" value="click">
-    </body>
-    <script>
-        function debounce(fn,time){
-            let timer=null;
-            return function(){
-                clearTimeout(timer);
-                timer=setTimeout(()=>fn(...arguments),time);
-            }
-        }
-        function sayHi(){
-            console.log("hi");
-        }
-        let elemnt=document.getElementById("btn")
-        elemnt.addEventListener("click",debounce(sayHi,500));
-    </script>
+<body>
+	<div>
+		<input id='box'>
+	</div>
+</body>
+<script>
+	let box=document.getElementById('box');
+	function debounce(fn,delay){
+		let timer;
+		return function(){
+			clearTimeout(timer);
+			timer=setTimeout(()=>{
+				fn(...arguments)
+			},delay)
+		}
+	}
+	function fn(name){
+		console.log(name)
+	}
+	let debouncefn=debounce(fn,500);
+	box.addEventListener('input',e=>{debouncefn('li')},false)
+</script>
 </html>
