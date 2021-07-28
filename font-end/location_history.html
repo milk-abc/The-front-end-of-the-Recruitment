@@ -19,18 +19,22 @@
           (e) => {
             e.preventDefault();
             let link = item.textContent;
-            location.hash = link;
+            if (window.history && history.pushState) {
+              window.history.pushState({ name: "history" }, link, link);
+            } else {
+              //不支持，安装polyfill补丁包
+            }
           },
           false
         );
       });
       //监听路由改变view
       window.addEventListener(
-        "hashchange",
+        "popstate",
         (e) => {
           console.log({
             location: location.href,
-            hash: location.hash,
+            state: e.state,
           });
         },
         false

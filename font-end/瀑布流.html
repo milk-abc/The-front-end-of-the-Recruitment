@@ -4,7 +4,6 @@
   <style>
     img {
       width: 220px;
-      /* display: block; */
     }
     .item {
       position: absolute;
@@ -14,7 +13,7 @@
     <div id="box">
       <div class="item">
         <img
-          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+          src="https://i.pinimg.com/236x/a6/cd/0a/a6cd0a15d5b2909539dd7944201127d2.jpg"
         />
       </div>
       <div class="item">
@@ -64,7 +63,7 @@
       </div>
       <div class="item">
         <img
-          src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg"
+          src="https://i.pinimg.com/236x/a6/cd/0a/a6cd0a15d5b2909539dd7944201127d2.jpg"
         />
       </div>
     </div>
@@ -105,31 +104,44 @@
             }
           }
         }
-      };
-      window.onscroll = function () {
-        //加载图片
-        if (
-          getClient().height + getScrollTop() >=
-          items[items.length - 1].offsetTop
-        ) {
+        window.onscroll = function () {
+          //加载图片
+          if (
+            getClient().height + getScrollTop() >=
+            items[items.length - 1].offsetTop
+          ) {
+            var datas = [
+              "https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg",
+              "https://i.pinimg.com/236x/44/cb/7f/44cb7fc19131e851f639f6e24acbdec6.jpg",
+              "https://i.pinimg.com/236x/6a/b0/d9/6ab0d93ee045cde3a25b5a0a22cd6435.jpg",
+              "https://i.pinimg.com/236x/0f/41/f6/0f41f6073f27a4c8baf57d26f76b4b9a.jpg",
+            ];
+            for (var i = 0; i < datas.length; i++) {
+              var div = document.createElement("div");
+              div.className = "item";
+              div.innerHTML = `<img src=${datas[i]}>`;
+              box.appendChild(div);
+            }
+            waterFall();
+          }
+        };
+        //兼容
+        function getClient() {
+          return {
+            width:
+              window.innerWidth ||
+              document.documentElement.clientWidth ||
+              document.body.clientWidth,
+            height:
+              window.innerHeight ||
+              document.documentElement.clientHeight ||
+              document.body.clientHeight,
+          };
+        }
+        function getScrollTop() {
+          return window.pageYOffset || document.documentElement.scrollTop;
         }
       };
-      //兼容
-      function getClient() {
-        return {
-          width:
-            window.innerWidth ||
-            document.documentElement.clientWidth ||
-            document.body.clientWidth,
-          height:
-            window.innerHeight ||
-            document.documentElement.clientHeight ||
-            document.body.clientHeight,
-        };
-      }
-      function getScrollTop() {
-        return window.pageYOffset || document.documentElement.scrollTop;
-      }
     </script>
   </body>
 </html>
