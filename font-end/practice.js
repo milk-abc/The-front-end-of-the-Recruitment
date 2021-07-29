@@ -12,22 +12,12 @@
 // // person1.hobby[0] = "玩耍";
 // // console.log(person);
 // console.log(person1);
-function add(x, y, z) {
-  return x + y + z;
-}
-function curry(fn, args) {
-  let len = fn.length;
-  args = args || [];
+function Foo() {
+  let a = 8;
   return function () {
-    for (let i = 0; i < arguments.length; i++) {
-      args.push(arguments[i]);
-    }
-    if (len > args.length) {
-      return curry(fn, args);
-    } else {
-      return fn(...args);
-    }
+    a++;
+    console.log(a);
   };
 }
-let addCurry = curry(add);
-console.log(addCurry(1)(2)(3));
+let f = Foo();
+f();
