@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>自定义Promise</title>
+  </head>
+  <body>
+    <script src="./lib/Promise.js"></script>
+    <script>
+      const p = new Promise((resolve, reject) => {
+        setTimeout(() => {
+          // resolve(1);
+          reject(1);
+          console.log("reject()改变状态之后");
+        }, 100);
+      });
+      p.then(
+        (value) => {
+          console.log("onResolved1()", value);
+        },
+        (reason) => {
+          console.log("onReject1()", reason);
+        }
+      );
+      p.then(
+        (value) => {
+          console.log("onResolved2()", value);
+        },
+        (reason) => {
+          console.log("onReject2()", reason);
+        }
+      );
+    </script>
+  </body>
+</html>

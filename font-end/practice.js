@@ -12,12 +12,15 @@
 // // person1.hobby[0] = "玩耍";
 // // console.log(person);
 // console.log(person1);
-function Foo() {
-  let a = 8;
-  return function () {
-    a++;
-    console.log(a);
-  };
-}
-let f = Foo();
-f();
+// var func1 = (x) => ({ x });
+// console.log(func1(1));
+// let dp = new Array(m);
+// for (let i = 0; i < m; i++) {
+//   dp[i] = new Array(n).fill(0);
+// }
+// for(let i=0;i<m;i++){
+//   for(let j=0;j<n;j++){
+
+//   }
+// }
+
