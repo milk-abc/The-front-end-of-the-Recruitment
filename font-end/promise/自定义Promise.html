@@ -6,7 +6,7 @@
   </head>
   <body>
     <script src="./lib/Promise.js"></script>
-    <script>
+    <!-- <script>
       const p = new Promise((resolve, reject) => {
         setTimeout(() => {
           // resolve(1);
@@ -29,7 +29,37 @@
         (reason) => {
           console.log("onReject2()", reason);
         }
-      );
-    </script>
+      ); -->
+      <script>
+        const p = new Promise((resolve, reject) => {
+          setTimeout(() => {
+            //resolve(1);
+            reject(1);
+          }, 100);
+        }).then(
+          (value) => {
+            console.log("onResolved1()", value);
+          },
+          (reason) => {
+            console.log("onReject1()", reason);
+            return new Promise((resolve,reject)=>reject(5))
+          }
+        ).then(
+          (value) => {
+            console.log("onResolved2()", value);
+          },
+          (reason) => {
+            console.log("onReject2()", reason);
+          }
+        ).catch(reason=>{
+          console.log('onReject3()',reason);
+          return new Promise(()=>{})//中断promise链
+        }).then(value=>{
+          console.log('onResolve4()',value);
+        },
+        reason=>{
+          console.log('onRejected4()',reason);
+        })
+      </script>
   </body>
 </html>
