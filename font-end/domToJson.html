@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<body>
+	<div>
+		<span>
+			<a></a>
+		</span>
+		<span>
+			<a></a>
+			<a></a>
+		</span>
+	</div>
+</body>
+<script>
+	let recur=function(node){
+		if(node==null){
+			return []
+		}
+		let obj={};
+		obj['tag']=node.tagName;
+		obj['children']=[];
+		let child=node.children;
+		for(let i=0;i<child.length;i++){
+			obj.children.push(recur(child[i]));
+		}
+		return obj;
+	}
+	let node=document.getElementsByTagName('div')[0];
+	let ans=recur(node);
+	console.log('ans',ans);
+	
+</script>
+</html>
