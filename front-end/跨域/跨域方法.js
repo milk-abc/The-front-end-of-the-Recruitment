@@ -73,7 +73,7 @@ HTTP响应
 // Server：服务器通过这个头告诉浏览器服务器的类型。
 // Content-Encoding：服务器通过这个头告诉浏览器数据的压缩格式。
 // Content-Length：服务器通过这个头告诉浏览器回送数据的长度
-// Content-Type：服务器通过这个头告诉浏览器回送数据的类型
+// Content-Type  ：服务器通过这个头告诉浏览器回送数据的类型
 // Last-Modified：告诉浏览器当前资源的最后缓存时间
 // Refresh：告诉浏览器隔多久刷新一次
 // Content-Disposition：告诉浏览器以下载方式打开数据

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="send">send server</button>
+    <script src="./ajax.js"></script>
+    <script>
+      async function send() {
+        //可读性强
+        try {
+          await myAjax("http://localhost:8001");
+          await myAjax("http://localhost:8001/1");
+          await myAjax("http://localhost:8001/2");
+          let data = await myAjax("http://localhost:8001/3");
+          console.log(data);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    </script>
+  </body>
+</html>
