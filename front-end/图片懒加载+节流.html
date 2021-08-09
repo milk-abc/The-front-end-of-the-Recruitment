@@ -26,7 +26,6 @@
       var n = 0;
       var img = document.getElementsByTagName("img");
       var num = img.length;
-      console.log('n',n)
       lazyload();//第一次用个lazyload不用监听滑动就可以加载出第一张
       window.onscroll = lazyload;
       function lazyload() {
