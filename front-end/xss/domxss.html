@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dom xss</title>
+  </head>
+  <body>
+    <form name="domXss" method="GET">
+      <script>
+        if (document.location.href.indexOf("search=") >= 0) {
+          var str = window.location.search;
+          var ipt = decodeURIComponent(str.split("search=")[1]);
+          ipt = ipt.replace(/\+/g, " ");
+          document.write("<p>" + ipt + "</p>");
+        }
+      </script>
+      <p>please input:<input type="text" name="search" /></p>
+      <input type="submit" value="submit" />
+    </form>
+  </body>
+</html>
