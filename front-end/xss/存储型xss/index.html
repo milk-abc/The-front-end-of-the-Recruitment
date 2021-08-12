@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <textarea id="textarea" style="height: 500px"></textarea>
+    <button id="submit">提交</button>
+    <script>
+      document.getElementById('sumbit').onclick=function(){
+        var content=document.getElementById('textarea').value;
+        var url='http://localhost:3000/postArticle';
+        easyRequest().post(url,{content:content}).then(res=>{
+          alert(res.message);
+          window.open('http://localhost:3000/presistent-xss');
+        });
+      };
+      function easyRequest(){
+        return{
+          post:function(url,data){
+            return fetch(url,{
+              body:JSON.stringify(data),
+              cache:'no-cache',
+              credentials:'same-origin',
+              headers:{
+                'content-type':'application/json'
+              },
+              method:'POST',
+              mode:'cors',
+              redirect:'follow',
+              referrer:'no-referrer'
+            }).then(response=>response.json());
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

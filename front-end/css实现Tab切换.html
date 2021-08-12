@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style type="text/css">
+      .tabs {
+        position: relative;
+        width: 400px;
+        height: 300px;
+      }
+      .tab-pane {
+        display: inline-block;
+      }
+      .tabs input[type="radio"] {
+        position: absolute;
+        clip: rect(0, 0, 0, 0);
+      }
+      .tabs input[type="radio"]:checked + .tab-item {
+        background: rebeccapurple;
+        color: salmon;
+      }
+      .tabs input[type="radio"]:checked + .tab-item + .tab-content {
+        z-index: 1;
+      }
+      .tab-item {
+        display: block;
+        height: 34px;
+        line-height: 34px;
+        cursor: pointer;
+        padding: 0 10px;
+      }
+      .tab-content {
+        position: absolute;
+        border: 1px solid #eee;
+        padding: 20px;
+        left: 0;
+        top: 36px;
+        bottom: 0;
+        right: 0;
+        background: rgb(209, 151, 151);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="tabs">
+      <div class="tab-pane">
+        <input type="radio" name="tab" id="tab01" />
+        <label class="tab-item" for="tab01">tab01</label>
+        <div class="tab-content">111</div>
+      </div>
+      <div class="tab-pane">
+        <input type="radio" name="tab" id="tab02" />
+        <label class="tab-item" for="tab02">tab02</label>
+        <div class="tab-content">222</div>
+      </div>
+      <div class="tab-pane">
+        <input type="radio" name="tab" id="tab03" />
+        <label class="tab-item" for="tab03">tab03</label>
+        <div class="tab-content">333</div>
+      </div>
+    </div>
+  </body>
+</html>

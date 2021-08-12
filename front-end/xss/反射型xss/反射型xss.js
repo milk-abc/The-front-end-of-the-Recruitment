@@ -24,7 +24,7 @@ app.post("/register", function (req, resp) {
   resp.writeHead(200, { "Content-Type": "text/html;charset=utf-8" });
 
   // console.log(`注册成功,欢迎 ${username}\n`);
-  resp.write(`<script>alert('yyy')</script>`);
+  // resp.write(`<script>alert('yyy')</script>`);
   // safe 有值时过滤 username
   resp.end(
     String.raw`注册成功\\n,欢迎 ${safe ? SaferHTML(username) : username}`
