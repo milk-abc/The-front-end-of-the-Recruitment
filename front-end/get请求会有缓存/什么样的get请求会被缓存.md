@@ -2,9 +2,9 @@ IE 浏览器会缓存网页中的 GET 和 XHR 的内容，请求方式是 get �
 
 https://blog.csdn.net/qq_26941173/article/details/84935421
 禁止浏览器缓存的常用方法：
+
+
 1.html 页面设置 meta 标签
-
-
 <meta http-equiv="Cache-Control" content="no-store"/>
 因浏览器不同或者同一浏览器间版本不同，这个方法有很大的兼容性，很多时候没有作用
 
