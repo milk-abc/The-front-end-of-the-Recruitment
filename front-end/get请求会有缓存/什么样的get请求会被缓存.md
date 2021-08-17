@@ -4,11 +4,16 @@ https://blog.csdn.net/qq_26941173/article/details/84935421
 禁止浏览器缓存的常用方法：
 1.html 页面设置 meta 标签
 
+
 <meta http-equiv="Cache-Control" content="no-store"/>
 因浏览器不同或者同一浏览器间版本不同，这个方法有很大的兼容性，很多时候没有作用
+
+
 2.在get请求的URL参数后面加时间戳或者随机数
 xhr.open("get", "http://127.0.0.01:3000/home?t" + new Date());
 虽然能解决IE每次只从浏览器缓存中读取数据，但每个ajax都会去请求服务器，性能不好
+
+
 3.前端后端设置对应http头
 header:{
 	'cache-control':'no-cache',
