@@ -1,20 +1,15 @@
 //双指针，从后往前遍历，取较大值放在数组末尾
-var merge = function(A, m, B, n) {
-    let i=m-1,j=n-1,k=m+n-1;
-    while(i>=0||j>=0){
-        let cur=0;
-        if(i==-1){
-            cur=B[j--];
-        }
-        else if(j==-1){
-            cur=A[i--];
-        }
-        if(A[i]>=B[j]){
-            cur=A[i--];
-        }
-        else if(A[i]<B[j]){
-            cur=B[j--];
-        }
-        A[k--]=cur;
+var merge = function (nums1, m, nums2, n) {
+  let index1 = m - 1,
+    index2 = n - 1;
+  for (let i = m + n - 1; i >= 0; i--) {
+    if (index1 < 0) {
+      nums1[i] = nums2[index2--];
+    } else if (index2 < 0) {
+      nums1[i] = nums1[index1--];
+    } else {
+      nums1[i] =
+        nums1[index1] > nums2[index2] ? nums1[index1--] : nums2[index2--];
     }
+  }
 };

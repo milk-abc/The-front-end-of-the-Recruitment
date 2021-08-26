@@ -1,22 +1,9 @@
-let line = readline();
-let arr = line.split(" ").map((item) => parseInt(item));
-let n = arr.length;
-let left = new Array(n);
-for (let i = 0; i < n; i++) {
-  if (i > 0 && arr[i] > arr[i - 1]) {
-    left[i] = left[i - 1] + 1;
-  } else {
-    left[i] = 1;
-  }
-}
-let right = 0,
-  res = 0;
-for (let i = n - 1; i >= 0; i--) {
-  if (i < n - 1 && arr[i] > arr[i - 1]) {
-    right++;
-  } else {
-    right = 1;
-  }
-  res += Math.max(left[i], right);
-}
-console.log(res);
+//建堆
+//使用原来的数组，一个数组在另一个维度上可以当做一个完全二叉树
+//除了最后一层之外其他的每一次都被完全填充
+//从下往上建堆
+//[3,1,2,4,5]
+
+//将数组建堆
+//取最下面的树的根节点
+
