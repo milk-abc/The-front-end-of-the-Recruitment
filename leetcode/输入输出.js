@@ -4,3 +4,4 @@ while ((line = read_line())) {
     console.log(arr[i]);
   }
 }
+
