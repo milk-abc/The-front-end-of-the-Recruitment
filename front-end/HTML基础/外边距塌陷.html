@@ -1,0 +1,33 @@
+<!-- 同一个BFC下的相邻div margin重叠的问题
+1.全部都为正值，取最大值
+2.不全是正值，都取绝对值，然后用正值的最大值减去绝对值的最大值
+3.没有正值，则都取绝对值，然后用0减去最大值 -->
+<!DOCTYPE html>
+<html>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .divout {
+      width: 100px;
+      height: 100px;
+      background: yellow;
+      margin-bottom: 50px;
+      border: 1px solid black;
+    }
+    .divout1 {
+      width: 50px;
+      height: 50px;
+      background: yellow;
+      margin-top: -100px;
+      /*float:left;*/
+      /*position:absolute;*/
+      border: 1px solid black;
+    }
+  </style>
+  <body>
+    <div class="divout"></div>
+    <div class="divout1"></div>
+  </body>
+</html>

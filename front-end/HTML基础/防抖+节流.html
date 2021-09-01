@@ -7,7 +7,7 @@
 <script>
 	let box=document.getElementById('box');
 	function throttle(fn, delay) {
-    let last = 0,
+    let last = new Date(),
       timer = null;
     return function (...args) {
       let now = new Date();

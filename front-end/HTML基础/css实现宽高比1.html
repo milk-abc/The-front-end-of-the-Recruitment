@@ -1,0 +1,23 @@
+<!-- 实现一个div,宽度是body的一半，宽高比满足4:3
+方法一：
+利用bottom设置成75% ，这个百分比是相对于其父元素的宽度而言的
+,其 height 设置为 0 以使元素的“高度”等于 padding-bottom 的值-->
+<!DOCTYPE html>
+<html>
+  <style type="text/css">
+    .father {
+      width: 50%;
+      background-color: bisque;
+    }
+    .childbox {
+      padding-bottom: 75%;
+      height: 0;
+      background-color: aquamarine;
+    }
+  </style>
+  <body>
+    <div class="father">
+      <div class="childbox">hello</div>
+    </div>
+  </body>
+</html>

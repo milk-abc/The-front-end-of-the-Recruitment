@@ -1,13 +1,13 @@
 //ES5中的面向对象
 //对象的创建使用对象字面量和构造函数，原型模式
 function parent(name) {
-    this.name = name;
+  this.name = name;
 }
 parent.prototype.sayname = function () {
-    console.log(this.name)
-}
+  console.log(this.name);
+};
 function child() {
-    parent.call(this)
+  parent.call(this);
 }
 // let empty=function() {
 
@@ -20,18 +20,24 @@ let child1 = new child();
 //ES6中的面向对象
 //对象的创建使用类
 class Animal {
-    constructor(name) {
-        this.name = name;
-    }
-    speak() {
-        console.log(this.name);
-    }
+  constructor(name) {
+    this.name = name;
+  }
+  speak() {
+    console.log(this.name);
+  }
 }
 class dog extends Animal {
-    constructor(name) {
-        super(name);
-    }
-    speak() {
-        super.speak();
-    }
+  constructor(name) {
+    super(name);
+  }
+  speak() {
+    super.speak();
+  }
+}
+class A {}
+class B extends A {
+  constructor() {
+    super(); //A.prototype.constructor.call(this);
+  }
 }

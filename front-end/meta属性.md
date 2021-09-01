@@ -1,21 +1,23 @@
-有两个名称：name,http-equiv
+meta 是描述 HTML 文档的元数据
+有两个名称：name,http-equiv 和 content 属性成对出现，content 属性是对 name 属性内容的具体描述
 name 属性
 name 属性用来描述网页，成对的 content 属性是对 name 属性内容的具体描述
 1.keywords
-告诉搜索引擎网页的关键字是前端
+定义文档关键词，用于搜索引擎
 
 <meta name="keywords" content="前端">
 2.description
-告诉搜索引擎网站的主要内容
+定义web页面描述
 <meta name="descriptiotn" content="理科生，热爱前端，目前研二">
 3.viewport
 用于设计移动端网页
 <meta name="viewport" content="width=device-width,initial-scale=1">
-http-equiv属性
-相当于http的作用，可以用来定义http参数
-1.content-Type
-用于设定网页字符集，便于浏览器解析和渲染页面
+4.charset
+定义文档的字符编码。
 <meta charset="utf-8">
+http-equiv属性
+把 content 属性关联到 HTTP 头部
+1.content-Type
 2.X-UA-Compatible(浏览器采取何种版本渲染当前页面)
 用于告知浏览器以何种版本来渲染页面
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">

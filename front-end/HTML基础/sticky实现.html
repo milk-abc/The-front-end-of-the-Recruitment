@@ -1,0 +1,37 @@
+<!-- 当viewport视口滚动到top距离小于10px之前，元素为相对定位，之后元素将固定在顶部距离10px的位置 -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      div {
+        width: 200px;
+        height: 1000px;
+        margin: 300px auto;
+      }
+      .stick {
+        /* position: sticky; */
+        /* top: 20px; */
+        background-color: rosybrown;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <p class="stick">hahhah</p>
+    </div>
+  </body>
+  <script>
+    window.onscroll = function () {
+      let ele = document.getElementsByClassName("stick")[0];
+      //getBoundingClientRect返回元素到浏览器左上角的top,left,bottom,right的距离对象
+      let top = ele.getBoundingClientRect().top;
+      // //浏览器滑动的高度
+      let scroll = window.pageYOffset;
+      console.log("ele", top, scroll);
+      if (top - scroll < 10) {
+        ele.style.position = "fixed";
+        ele.style.top = 20 + "px";
+      }
+    };
+  </script>
+</html>

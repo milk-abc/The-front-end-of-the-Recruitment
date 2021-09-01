@@ -54,6 +54,7 @@ class Observer {
       for (let key in data) {
         this.defineReactive(data, key, data[key]);
       }
+      
     }
   }
   defineReactive(obj, key, value) {
