@@ -8,23 +8,22 @@
 //函数式编程不需要考虑"死锁"（deadlock），因为它不修改变量，所以根本不存在"锁"线程的问题。
 //不必担心一个线程的数据，被另一个线程修改，可以把工作分摊到多个线程，部署"并发编程"。
 function add(a, b, c) {
-    return a + b + c;
+  return a + b + c;
 }
-console.log(add(1, 2, 3))
+console.log(add(1, 2, 3));
 function curry(fn, args) {
-    let argsLen = fn.length;
-    args = args || [];
-    return function () {
-        for (let i = 0; i < arguments.length; i++) {
-            args.push(arguments[i]);
-        }
-        if (args.length < argsLen) {
-            return curry(fn, args)
-        }
-        else {
-            return fn(...args)
-        }
+  let argsLen = fn.length;
+  args = args || [];
+  return function () {
+    for (let i = 0; i < arguments.length; i++) {
+      args.push(arguments[i]);
     }
+    if (args.length < argsLen) {
+      return curry(fn, args);
+    } else {
+      return fn(...args);
+    }
+  };
 }
 let addCurry = curry(add);
 console.log(addCurry(1)(2)(3));
