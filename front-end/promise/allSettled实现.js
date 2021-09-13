@@ -1,5 +1,6 @@
 Promise.prototype.allSettled = function (promises) {
   let res = [];
+  let len = promises.length;
   return new Promise((resolve) => {
     promises.forEach((p) => {
       p.then(
@@ -8,7 +9,10 @@ Promise.prototype.allSettled = function (promises) {
           res.push({ status: "reject", reason: reason });
         }
       ).finally(() => {
-        resolve(data);
+        len--;
+        if (len === 0) {
+          resolve(res);
+        }
       });
     });
   });

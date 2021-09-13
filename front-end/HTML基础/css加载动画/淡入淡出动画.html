@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <!-- animation自定义动画 -->
+    <!-- animation属性是animation-duration,animation-timing-function
+		animation-delay,animation-iteration-count,(animation-dirction,animation-fill-mode
+		animation-play-state),animation-name属性的一个简写属性形式 -->
+    <!-- transition利用伪类实现渐变动画 -->
+    <!-- transform转变动画 -->
+    <style>
+      .fadenum1 {
+        animation: 3s linear 1s infinite running fadeout;
+        -webkit-animation: fadeout 3s linear 1s infinite running;
+        background-color: aqua;
+        width: 200px;
+        height: 200px;
+      }
+      .fadenum2 {
+        width: 100px;
+        height: 100px;
+        opacity: 1;
+        background-color: #0000ff;
+        -webkit-transition: background-color 2s, opacity 2s,
+          -webkit-transform 2s;
+        transition: background-color 2s, opacity 2s, transform 2s;
+      }
+      .fadenum2:hover {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+        -webkit-transform: translateY(-100px);
+        transform: translateY(-100px);
+      }
+      /* .fadenum3 {
+        animation: 3s linear 1s infinite running fadeout;
+        -webkit-animation: 3s linear 1s infinite running fadeout;
+        background-color: aqua;
+        width: 200px;
+        height: 200px;
+      } */
+      @-webkit-keyframes fadeout {
+        0% {
+          opacity: 1;
+          -webkit-transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          -webkit-transform: translateY(-100px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <div class="fadenum1"></div> -->
+    <div class="fadenum2"></div>
+    <!-- <div class="fadenum3"></div> -->
+  </body>
+</html>

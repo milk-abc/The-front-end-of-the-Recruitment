@@ -35,6 +35,7 @@ class Watcher {
   }
   update() {
     //更新操作 数据变化后 会调用观察者的update方法
+    //真实vue中会将watcher自己放入一个watcher异步队列
     let newValue = CompilerUtil.getVal(this.vm, this.expr);
     if (newValue !== this.oldValue) {
       this.cb(newValue);

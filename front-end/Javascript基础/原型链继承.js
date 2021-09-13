@@ -10,9 +10,10 @@ function Child(name, age) {
   this.age = age;
 }
 Child.prototype = Object.create(Parent.prototype);
-function empty(){}
-empty.prototype=Parent.prototype;
-Child.prototype=new empty();
+// function empty(){}
+// empty.prototype=Parent.prototype;
+// empty.prototype.constructor=empty;//修正contructor
+// Child.prototype=new empty();
 Child.prototype.constructor = Child;
 console.log(Child.prototype);
 console.log(Child.prototype.__proto__ === Parent.prototype);

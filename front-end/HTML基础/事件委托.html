@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <div>
+      <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+      </ul>
+    </div>
+  </body>
+  <script>
+    let ul = document.getElementsByTagName("ul")[0];
+    let li = document.getElementsByTagName("li");
+    let ulevenet = function (event) {
+      event = event || window.event;
+      let target = event.target || event.srcElement;
+      if (target.nodeName.toLowerCase() === "li") {
+        console.log(target.innerText);
+      }
+    };
+    ul.addEventListener("click", ulevenet, false);
+  </script>
+</html>

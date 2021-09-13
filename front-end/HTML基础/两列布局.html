@@ -3,31 +3,59 @@
   <!-- 根元素html,float不为none,overflow不为visible,postion为absolute/fixed
   display为flex,table,inline-block,grid -->
   <style>
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+    }
+    /* 1 */
     /* .parent {
       display: flex;
+      height: 100%;
+      width: 100%;
     }
     .left {
-      margin-right: 20px;
-      width: 200px;
+      flex: 0 0 200px;
+      background-color: aqua;
     }
     .right {
       flex: 1;
+      background-color: bisque;
     } */
-    .parent {
-      height: 200px;
+    /* 2 */
+    /* .parent {
+      width: 100%;
+      height: 100%;
     }
     .left {
       float: left;
       width: 200px;
-      margin-right: 20px;
       height: 100%;
       background-color: green;
     }
     .right {
-      overflow: hidden;
+      margin-left: 200px;// overflow: hidden; 
       height: 100%;
+      border: 1px solid black;
       background-color: hotpink;
+    } */
+    /* 3 */
+    /* .parent {
+      width: 100%;
+      height: 100%;
     }
+    .left {
+      position: absolute;
+      width: 200px;
+      height: 100%;
+      background-color: green;
+    }
+    .right {
+      margin-left: 200px;
+      height: 100%;
+      border: 1px solid black;
+      background-color: hotpink;
+    } */
   </style>
   <body>
     <div class="parent">
