@@ -24,7 +24,8 @@ flushcallbacks将pending设置为false，表示下一个flushcallbacks函数可�
 怎么去重
 
 当响应式数据更新后，会调用dep.notify，通知dep中收集的watcher去执行update方法中的queuewatcher，此方法通过判断has对象中是否已经有了watcher.id，当没有watcher.id就将watcher放入queue，并设置has[id]=true。再定义一个用于刷新watcher队列的方法flushSchedulerQueue。
-通过nextTick方法将一个刷新watcher队列的方法flushqueue放入callbacks数组中
+通过nextTick方法将一个刷新watcher队列的方法flushSchedulerQueue放入callbacks数组中。
+会定义一个flushcallbacks方法，它会将pending设为true,并执行callbacks中的flushSchedulerQueue。
 将timeFunc定义为一个将flushcallbacks方法放入异步队列中的函数，可以设置为promise,mutationobserver,setImmediate,setTimeout。判断pending是否为false，是的话执行timeFunc，也就是异步执行flushcallbacks，flushcallbacks将pending设置为true，清空callbacks数组，并执行callbacks数组中的所有函数，flushSchedulerqueue函数和自定义nextTick回调函数。flushSchedulerQueue函数负责刷新watcher队列queue数组，执行queue数组中每一个watcher的run方法，从而进入dom更新阶段，比如执行组件的updated更新函数或者执行用户watch的回调函数渲染新数据到dom上。
 callbacks数组包含flushSchedulerqueue
 flushSchedulerqueue包含watcher queue

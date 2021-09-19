@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+  </body>
+  <script>
+    // event.currentTarget是绑定的元素,event.target是触发的元素
+    let ul = document.getElementsByTagName("ul")[0];
+    let fn = function (e) {
+      
+      console.log("curTarget: " + e.currentTarget + " target: " + e.target);
+    };
+    ul.addEventListener("click", fn, false);
+  </script>
+</html>

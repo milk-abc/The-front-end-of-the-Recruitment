@@ -9,7 +9,9 @@ optimize-css-assets-plugin 压缩 css
 htmlwebpackplugin 配置 minify 压缩 html
 hotModuleReplacemetnPlugin 用于开发环境热更新替换自动刷新
 小图片使用 base64 格式，减少 http 请求
-SSR 渲染，预渲染
+SSR 渲染，预渲染；
+服务端渲染的过程未解析执行JS，构建html页面，输出给浏览器
+预渲染直接输出HTML页面给浏览器
 cdn转发
 content-encoding:gzip http压缩
 缓存，设置expires,cache-control,Last-Modified,etag

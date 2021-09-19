@@ -1,0 +1,2 @@
+1.Object对象有原型，也就是说他有默认的key值在对象上面，除非创建一个没有原型的对象
+2.在Object对象中，只能把String和Symbol作为key值，但是在map中,key值可以是任何基本类型或者对象，通过map对象的size属性很容易的获取到map长度。

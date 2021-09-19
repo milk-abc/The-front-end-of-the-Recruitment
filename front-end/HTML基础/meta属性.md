@@ -1,3 +1,4 @@
+兼容性模式设置优先级：meta>http
 meta 是描述 HTML 文档的元数据
 有两个名称：name,http-equiv 和 content 属性成对出现，content 属性是对 name 属性内容的具体描述
 name 属性

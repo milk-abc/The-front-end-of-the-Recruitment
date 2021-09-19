@@ -1,5 +1,6 @@
 function getUrlParam(sUrl, sKey) {
   let reg = new RegExp("[?&](.+?)=(.+?)", "g");
+  //let reg = /[&?](.+?)=(.+?)/g;//不要引号
   let res = sKey ? [] : {};
   while ((match = reg.exec(sUrl)) != null) {
     if (sKey) {

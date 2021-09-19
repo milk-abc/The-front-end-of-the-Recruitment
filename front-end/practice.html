@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <style>
-      p {
-        color: green;
-        background-color: greenyellow;
-      }
-    </style>
     <p>test text</p>
-    <link rel="stylesheet" href="1.css" />
+    <script>
+      let p = new Promise((resolve, reject) => {
+        reject(1);
+      });
+      Promise.resolve(p).then(
+        (value) => console.log(value),
+        (err) => console.log(err)
+      );
+    </script>
   </body>
 </html>

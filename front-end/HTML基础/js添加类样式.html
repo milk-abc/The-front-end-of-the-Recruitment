@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .test {
+        width: 100px;
+        height: 100px;
+        background-color: aqua;
+      }
+      .test1 {
+        width: 200px;
+        height: 200px;
+        border: 1px solid;
+        background-color: azure;
+      }
+      .test2 {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="test" id="test">hhh</div>
+  </body>
+  <script>
+    let div = document.getElementById("test");
+    // div.setAttribute("class", "test1");
+    //追加样式不覆盖原来的样式
+    div.classList.add("test2");
+  </script>
+</html>

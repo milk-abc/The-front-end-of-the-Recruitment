@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+  </head>
+  <body>
+    <ul id="a">
+      <li id="b">1</li>
+      <li>2</li>
+      <li id="c">3</li>
+    </ul>
+  </body>
+  <script>
+    let parent = document.getElementById("a");
+    let temp = document.createElement("li");
+    let fir = document.getElementById("b");
+    let last = document.getElementById("c");
+    parent.insertBefore(temp, last);
+    parent.insertBefore(last, first);
+    parent.insertBefore(first, temp);
+    parent.removeChild(temp);
+  </script>
+</html>
