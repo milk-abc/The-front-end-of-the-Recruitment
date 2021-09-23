@@ -2,6 +2,8 @@ HappyPack,parallel-webpack,thread-loader 可以让 Webpack 同一时间处理多
 使用 DllPlugin 插件，把所有引入的第三方的代码都打包生成一个文件里，只在第一次打包时分析第三方代码，之后再执行打包时，直接用上次分析好的结果即可。
 使用 splitChunksPlugin 插件，对代码进行拆分，提取多个模块的公共代码，这些代码只需要打包一次。
 treeshaking 去除多余的 import 模块
+ES6之前，使用CommonJS引入模块，require()，这种引入是动态的，我们可以基于条件来导入需要的代码。因此无法确定在实际运行前需要或者不需要某些模块。ES6引入了完全静态的导入语法import
+
 利用缓存提升二次构建速度:babel-loader 开启缓存，使用 cache-loader
 动态 Polyfill 服务
 uglifyjs-webpack-plugin 压缩 js
