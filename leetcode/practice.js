@@ -1,51 +1,35 @@
-let arr = [
-  [".", ".", ".", "."],
-  [".", "#", "#", "."],
-  [".", "#", "#", "."],
-  [".", "#", "#", "#"],
-];
-let m = arr.length,
-  n = arr[0].length;
-let cnt = Infinity;
-let dir = [
-  [0, 1],
-  [0, -1],
-  [-1, 0],
-  [1, 0],
-];
-let vis = new Array(m);
-for (let i = 0; i < m; i++) {
-  vis[i] = new Array(n).fill(false);
-}
-let a = 5,
-  b = 10;
-let dfs = function (i, j, cost, vis) {
-  // console.log(i, j, cost, vis);
-  if (i >= m || j >= n || vis[i][j]) {
-    return;
-  }
-  if (i === m - 1 && j === n - 1) {
-    cnt = Math.min(cnt, cost);
-  }
-  vis[i][j] = true;
-  for (let d of dir) {
-    let curi = i + d[0],
-      curj = j + d[1];
-    if (
-      curi >= 0 &&
-      curi < m &&
-      curj >= 0 &&
-      curj < n &&
-      vis[curi][curj] === false
-    ) {
-      if (arr[curi][curj] === ".") {
-        dfs(curi, curj, cost, vis);
-      } else if (arr[curi][curj] === "#") {
-        dfs(curi, curj, cost + a, vis);
+// function toCamelCaseVar(variable) {
+//   // write code here
+//   let reg = /[\_\-](\w)/g;
+//   return variable.replace(reg, function (all, cur) {
+//     return cur.toUpperCase();
+//   });
+// }
+// console.log(toCamelCaseVar("Foo_style_css"));
+function sortVersion(versions) {
+  // write code here
+  let compare = function (version1, version2) {
+    const v1 = version1.split(".");
+    const v2 = version2.split(".");
+    for (let i = 0; i < v1.length || i < v2.length; i++) {
+      let a = 0,
+        b = 0;
+      if (i < v1.length) {
+        a = parseInt(v1[i]);
+      }
+      if (i < v2.length) {
+        b = parseInt(v2[i]);
+      }
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
       }
     }
-  }
-  vis[i][j] = false;
-};
-dfs(0, 0, 0, vis);
-console.log(cnt);
+    return 0;
+  };
+  versions.sort((x, y) => compare(x, y));
+  return versions;
+}
+console.log(sortVersion(["1.45.0", "1.5", "6", "2.3.4.5"]));
