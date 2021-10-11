@@ -1,35 +1,34 @@
-// function toCamelCaseVar(variable) {
-//   // write code here
-//   let reg = /[\_\-](\w)/g;
-//   return variable.replace(reg, function (all, cur) {
-//     return cur.toUpperCase();
-//   });
-// }
-// console.log(toCamelCaseVar("Foo_style_css"));
-function sortVersion(versions) {
+function minNumberDisappeared(large, small, dest) {
   // write code here
-  let compare = function (version1, version2) {
-    const v1 = version1.split(".");
-    const v2 = version2.split(".");
-    for (let i = 0; i < v1.length || i < v2.length; i++) {
-      let a = 0,
-        b = 0;
-      if (i < v1.length) {
-        a = parseInt(v1[i]);
-      }
-      if (i < v2.length) {
-        b = parseInt(v2[i]);
-      }
-      if (a < b) {
-        return -1;
-      }
-      if (a > b) {
-        return 1;
-      }
-    }
-    return 0;
-  };
-  versions.sort((x, y) => compare(x, y));
-  return versions;
+  let index = dest[0];
+  let x = dest[1];
+  let y = dest[2];
+  let n = small.length;
+  let m = small[0].length;
+  let cur = new Array(n);
+  for (let i = 0; i < n; i++) {
+    cur[i] = new Array(m).fill(0);
+  }
+  for (let i = 1; i < n; i++) {
+    cur[i][0] += cur[i - 1][0] + small[i - 1][0];
+  }
+  console.log(cur);
+  let dx = x - cur[index - 1][0];
+  let dy = y - cur[index - 1][1];
+  for (let i = 0; i < n; i++) {
+    cur[i][0] += dx;
+    cur[i][1] += dy;
+  }
+  console.log(cur); //左上角的点
+  for (let i = 0; i < n; i++) {}
 }
-console.log(sortVersion(["1.45.0", "1.5", "6", "2.3.4.5"]));
+let large = [1024, 768];
+let small = [
+  [100, 100],
+  [80, 150],
+  [300, 20],
+  [20, 300],
+  [200, 600],
+];
+let dest = [5, 0, 300];
+console.log(minNumberDisappeared(large, small, dest));
