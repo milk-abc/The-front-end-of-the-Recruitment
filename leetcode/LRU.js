@@ -14,11 +14,9 @@ LRUCache.prototype.get = function (key) {
   if (this.map.has(key)) {
     const value = this.map.get(key);
     this.map.delete(key);
-    this.map.set(key.value);
+    this.map.set(key, value);
     return value;
-  } else {
-    return -1;
-  }
+  } else return -1;
 };
 
 /**
