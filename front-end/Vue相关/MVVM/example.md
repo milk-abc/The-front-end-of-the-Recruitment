@@ -79,3 +79,6 @@ viewModel.init();
 当用户在输入框中输入待办事项并点击“Add”按钮时，viewModel 会捕获这个事件，调用Model的addItem方法添加新的待办事项，然后调用View的render方法重新渲染列表。这样就实现了Model和View之间的双向绑定和自动更新。
 
 请注意，这个示例是一个非常基础的MVVM实现，真实世界中的应用程序可能会使用更复杂的库或框架（如Vue.js、React配合Redux等）来实现MVVM模式，这些库或框架提供了更丰富的功能和更好的性能优化。
+
+总结：
+Model中包含数据存储和数据业务逻辑的方法，View中定义了数据映射到UI界面上的逻辑【渲染函数】，ViewModel是Model和View之间的中介，既包含了View也包含了Model，通过监听View对应的事件调用数据业务逻辑的方法更新Model数据，再调用渲染函数将Model数据的更新渲染出来。
