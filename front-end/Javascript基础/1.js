@@ -6,3 +6,4 @@ function getUrlParam(sUrl, sKey) {
 let url = "http://www.nowcoder.com?key=1&key=2&key=3&test=4#hehe";
 let ans = getUrlParam(url);
 console.log(ans);
+
