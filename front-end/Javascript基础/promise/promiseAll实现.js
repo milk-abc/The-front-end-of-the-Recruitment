@@ -3,7 +3,7 @@ Promise.prototype.all = function (promises) {
   let len = 0;
   return new Promise((resolve, reject) => {
     promises.forEach((promise, index) => {
-      Promise.resolve(promise).then(
+      promise.then(
         (value) => {
           len++;
           res[index] = value;
@@ -16,3 +16,23 @@ Promise.prototype.all = function (promises) {
     });
   });
 };
+//验证promise
+const promises = [
+  new Promise((resolve, reject) => {
+    setTimeout(() => resolve(3), 100);
+  }),
+  new Promise((resolve, reject) => {
+    setTimeout(() => reject(3), 0);
+  }),
+  new Promise((resolve, reject) => {
+    setTimeout(() => resolve(5), 0);
+  }),
+];
+Promise.prototype
+  .all(promises)
+  .then((value) => {
+    console.log(value);
+  })
+  .catch((error) => {
+    console.error("an error");
+  });

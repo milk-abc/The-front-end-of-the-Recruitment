@@ -31,6 +31,7 @@
       function lazyload() {
         for (var i = n; i < num; i++) {
           if (getClient().height + getScrollTop() >= img[i].offsetTop) {
+            console.log('hh',i,getClient().height, getScrollTop(),img[i].offsetTop)
             if (img[i].getAttribute("src") === "default.png") {
               img[i].src = img[i].getAttribute("data-src");
             }

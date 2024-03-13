@@ -19,6 +19,7 @@
 		console.log(name)
 	}
 	let debouncefn=debounce(fn,500);
-	box.addEventListener('input',e=>{debouncefn('li')},false)
+	box.addEventListener('input',e=>debouncefn('li'),false)
 </script>
 </html>
+
