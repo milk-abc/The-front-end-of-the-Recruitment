@@ -103,3 +103,10 @@ useEffect(() => {
 
 }, [a, b]);
 ```
+
+![image-20240315172621625](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240315172621625.png)
+
+useEffect是在真实DOM渲染完成【componentdidmount,componentdidupdate】后执行，存在清理函数的时候先运行清理函数再运行useEffect
+
+useLayoutEffect是在渲染前执行。
+

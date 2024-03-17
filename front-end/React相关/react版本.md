@@ -1,2 +1,2 @@
-react 版本 16.8
+react 版本 18
 webpack5
