@@ -1,4 +1,5 @@
 function bindThis(f, oTarget) {
+  console.log("arguments", arguments);
   let args = [].slice.call(arguments, 2);
   return function () {
     return f.apply(oTarget, [].slice.call(arguments).concat(args));
@@ -11,7 +12,7 @@ let f = function () {
     },
     { test: 2 }
   )(2, 3);
-  console.log("r", r);
+  // console.log("r", r);
   return r === 7;
 };
 f();
