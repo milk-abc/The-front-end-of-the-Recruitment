@@ -7,13 +7,14 @@ import { useEffect, useState } from "react";
 
 function App() {
   const [count, setCount] = useState(0);
-  console.log("render");
+  console.log("render1");
   useEffect(() => {
     console.log("effect");
     return () => {
       console.log("clear effect");
     };
   });
+  console.log("render2");
   return (
     <div>
       <div>{count}</div>

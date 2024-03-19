@@ -14,10 +14,14 @@
     </ul>
   </body>
   <script>
+    /**
+     * 简单理解就是将子级的多个监听事件委托给父级
+     * 将一个响应事件委托到另一个元素。当子节点被点击时，click 事件向上冒泡，
+     * 父节点捕获到事件后，我们判断是否为所需的节点，然后进行处理。
+     * 其优点在于减少内存消耗和动态绑定事件。**/
     // event.currentTarget是绑定的元素,event.target是触发的元素
     let ul = document.getElementsByTagName("ul")[0];
     let fn = function (e) {
-      
       console.log("curTarget: " + e.currentTarget + " target: " + e.target);
     };
     ul.addEventListener("click", fn, false);
