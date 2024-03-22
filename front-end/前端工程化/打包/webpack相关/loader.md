@@ -1,3 +1,5 @@
+webpack只理解Javascript和json。loader让webpack能处理其他类型的文件，并将它们转换为有效模块，以供应用程序使用，以及被添加到依赖图中。
+
 css-loader：
 加载 CSS 文件并解析 import 的 CSS 文件，最终返回 CSS 代码
 sass-loader
@@ -15,3 +17,4 @@ url-loader：
 vue-loader
 eslint-loader：
 检查代码是否符合规范，是否存在语法错误
+

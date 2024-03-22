@@ -1,20 +1,22 @@
-//无重复字符的最长子串，返回长度
-// "abbbcbd"  "cbd"
-const longestSubString = (str) => {
-  let left = 0,
-    right = 0;
-  const set = new Set();
-  let ans = 0;
-  while (left < s.length) {
-    while (right < s.length && !set.has(s[right])) {
-      set.add(s[right]);
-      right++;
-    }
-    ans = Math.max(ans, right - left);
-    set.delete(s[left]);
-    left++;
-  }
-  return ans;
+// const compose = (arr) => {
+//   return arr.reduce((total, cur) => {
+//     return Object.assign(total, cur);
+//   }, {});
+// };
+const compose = (...arr) => {
+  return arr.reduce((a, b) => {
+    console.log("1", a, b);
+    return (...args) => {
+      return b(a());
+    };
+  });
 };
-const ans = longestSubString("abbbcbd");
-console.log("ans", ans);
+const addnum1 = (a) => {
+  return a + 1;
+};
+const addnum10 = (a) => {
+  return a + 10;
+};
+const res = compose(addnum1, addnum10)(10);
+// compose([add1,add2,add3])=>compose(add4)
+console.log("res", res);
