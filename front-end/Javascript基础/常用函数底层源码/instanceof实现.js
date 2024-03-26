@@ -1,4 +1,5 @@
 //记住instanceof是右边变量的原型在左边变量的原型链上
+//查找b是否在a的原型链上
 function newinstance(name) {
   this.name = name;
 }

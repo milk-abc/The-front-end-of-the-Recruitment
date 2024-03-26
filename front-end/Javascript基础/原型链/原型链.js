@@ -38,3 +38,4 @@ F.b();
 // 它们只有proto属性
 
 // xxx.prototype对象是由Object创造
+
