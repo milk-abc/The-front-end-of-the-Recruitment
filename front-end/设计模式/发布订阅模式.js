@@ -64,28 +64,34 @@ hunterPeter.publish("tiger", 198);
 
 //猎人们发布(发布者)或订阅(观察者/订阅者)任务都是通过猎人工会(调度中心)关联起来的，
 //他们没有直接的交流。
-class publisher{
-  publish(dep){
+class publisher {
+  publish(dep) {
     dep.notify();
   }
 }
-class Dep{
-  constructor(){
-    this.subs=[];
+class Dep {
+  constructor() {
+    this.subs = [];
   }
-  addSub(sub){
+  addSub(sub) {
     this.subs.push(sub);
   }
-  notify(){
-    this.subs.forEach(sub=>sub.update());
+  notify() {
+    this.subs.forEach((sub) => sub.update());
   }
 }
-class subscribe{
-  update(){
-    console.log("update");
+class subscribe {
+  constructor(name) {
+    this.name = name;
+  }
+  update() {
+    console.log(this.name + "update");
   }
 }
-let dep=new Dep();
-let pub=new publisher();
-let sub=new 
-dep.addSub(sub);
+let dep = new Dep();
+let pub = new publisher();
+let sub1 = new subscribe("张三");
+let sub2 = new subscribe("李四");
+dep.addSub(sub1);
+dep.addSub(sub2);
+dep.notify();
