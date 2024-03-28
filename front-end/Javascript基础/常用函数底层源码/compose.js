@@ -4,7 +4,7 @@ const compose = (...arr) => {
   }
   return arr.reduce((a, b) => {
     return (...args) => {
-      return b(a(...args));
+      return a(b(...args));
     };
   });
 };
@@ -14,5 +14,8 @@ const addnum1 = (a) => {
 const addnum10 = (a) => {
   return a + 10;
 };
-const res = compose()(10);
+const addnum20 = (a) => {
+  return a + 20;
+};
+const res = compose(addnum1, addnum10, addnum20)(10);
 console.log("res", res);
