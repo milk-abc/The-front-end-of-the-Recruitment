@@ -13,6 +13,7 @@ function add(a, b, c) {
 console.log(add(1, 2, 3));
 function curry(fn, args) {
   let argsLen = fn.length;
+  console.log("argsLen", argsLen);
   args = args || [];
   return function () {
     for (let i = 0; i < arguments.length; i++) {

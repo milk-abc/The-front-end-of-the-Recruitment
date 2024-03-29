@@ -177,3 +177,313 @@ https://github.com/Vibing/blog/issues/13
 
 总结：new 对象的实例中的 this 指向该对象；
 箭头函数的 this 是引用的上一级的 this【和源码有关】
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+## 内容大概
+
+- 普通函数的this
+- 箭头函数的this
+
+## 普通函数
+
+### 1.结论
+
+先说结论，**普通函数的this的指向在函数定义的时候是确定不了的，只有函数执行的时候才能确定this到底指向谁，实际上this的最终指向的是那个调用它的对象，并且是最近的那个**
+
+### 2.分析
+
+例子1：
+
+```arcade
+function a(){ 
+    var user = "函数内部a";
+    console.log(this.user); //undefined
+    console.log(this); //Window
+}
+a();
+```
+
+我们知道像这种调用方式，都是window调用，所以输出如上，验证一下
+
+例子2：
+
+```arcade
+var user = "window的a";
+function a(){ 
+    var user = "函数内部a";
+    console.log(this.user); //window的a
+    console.log(this); //Window
+}
+a(); 
+```
+
+a()前面没有东西默认window.a(),调用方是window，所以此时输出“window的a”
+
+例子3：
+
+```arcade
+var o = {
+    user:"追梦子",
+    fn:function(){
+        console.log(this.user);  //追梦子
+ }
+}
+o.fn();
+```
+
+这里的this指向的是对象o，因为你调用这个fn是通过o.fn()执行的，那自然指向就是对象o，这里再次强调一点，this的指向在函数创建的时候是决定不了的，在调用的时候才能决定，谁调用的就指向谁，一定要搞清楚这个。
+
+例子4：
+
+```javascript
+var user = "window追梦子"
+var o = {
+    user:"追梦子",
+    fn:function(){
+        console.log(this.user);  //追梦子
+ }
+}
+window.o.fn();
+```
+
+这里虽然最外层是window调用，但是输出的this是对象o，这跟我上面说的结论一样，**this的最终指向的是那个调用它的对象，并且是最近的那个**
+
+例子5：
+
+```javascript
+var o = {
+    user:"追梦子",
+    fn:function(){
+        console.log(this) // o
+        setTimeout(function(){
+            console.log(this);  //window
+        },1000)
+        
+ }
+}
+o.fn();
+```
+
+fn被对象o触发，所以输出o，**定时器和延时器塞队列，最后是由window触发的，所以输出window**
+
+## 箭头函数（敲黑板，重点）
+
+### 1.结论
+
+- **在定义的时候就确认了this的指向**，跟普通函数在使用的时候确认是完全不同
+- **作用域总是指向当前作用域的上一个，上一个，上一个（很重要说3遍）！**
+- 当前作用域的上一个指向的对象，就是this的指向
+
+PS：JS的作用域一般指的是函数作用域，全局作用域，使用let那种块级作用域不算
+
+### 2.分析
+
+例子1：
+
+```arcade
+var b=11;
+var obj={
+ b:22,
+ say:()=>{
+ console.log(this.b);
+}
+}
+obj.say();//输出的值为11
+```
+
+say是箭头函数，当前作用域的上一个作用域就是全局，而全局指的是window，所以输出11
+
+例子2：
+
+```arcade
+var b=11;
+var obj={
+ b:22,
+ say:function(){
+  return () => {
+     console.log(this.b);
+  }
+ }
+}
+obj.say()();//输出的值为22
+```
+
+say里面return的那个是箭头函数，当前作用域的上一个作用域是say函数，然后say函数作用域指的是obj，所以输出22
+
+例子3：
+
+```arcade
+var str = 'window';  
+ 
+const obj = {
+    str:'obj',
+    fn: ()=>{
+    console.log(this.str);    
+    },
+    fn2: function(){
+    console.log(this.str)
+    return {
+        str: 'newObj',
+        fn: ()=>{
+        console.log(this.str);    
+        }    
+    }
+    }
+}
+ 
+obj.newFn = ()=>{
+    console.log(this.str);    
+}
+ 
+obj.fn(); //window
+obj.newFn(); //window
+obj.fn2().fn(); //输出obj，obj
+```
+
+1. fn上一级是全局，所以是window
+2. newFn是在外面定义的，不过解析也是跟fn一样
+3. fn2是obj触发，所以输出obj，fn2里面返回了一个对象，对象里面有一个fn箭头函数，这个fn的上一级作用域是fn2（这里注意不要被newObj迷惑）fn2指向的对象是obj，所以输出还是obj
+
+例子4：
+
+```arcade
+var obj = {
+  str:'obj',
+  fn: function(){
+   return {
+    str: 'inlineObj',
+    fn1: function(){
+     console.log(this.str); 
+     return ()=>{
+      console.log(this.str); 
+     }
+    },
+    fn2: ()=>{
+     console.log(this.str); 
+    }
+   }
+  }
+ }
+ 
+ obj.fn().fn1()(); //输出inlineObj，inlineObj
+ obj.fn().fn2(); //输出obj
+```
+
+1.obj.fn()这里注意已经返回了一个对象，所以触发fn1的时候，输出inlineObj，fn1里面return一个箭头函数，上一级作用域是fn1，fn1指向return的那个{},所以输出也是inlineObj
+2.fn2的上一级作用域是fn,fn指向obj，所以输出obj
+
+## 更改this的指向
+
+### 普通函数可以改
+
+```arcade
+var user = "window的a";
+function a(){ 
+    var user = "函数内部a";
+    console.log(this.user);
+}
+var obj = {
+    user:'obj的a'
+}
+a() //window的a
+a.call(obj) //obj的a
+```
+
+### 箭头函数不可以改
+
+```arcade
+var obj = {
+  str:'obj',
+  fn: function(){
+    console.log(this.str)
+   },
+  fn2: function(){
+    return () => {
+        console.log(this.str)
+    }
+    
+  }
+}
+var obj2 = {
+    str:'obj2'
+}
+obj.fn()  //obj
+obj.fn.call(obj2) //obj2
+obj.fn2()() //obj
+obj.fn2().call(obj2) //obj
+```
+
+可以看到，箭头函数就算用了call换了this指向，输出还是当初定义的那个范围
+
+## 一些比较特别
+
+### 点击事件
+
+```javascript
+<div id="dianji">点击事件</div>
+
+document.getElementById('dianji').addEventListener('click',function(){
+    console.log(this); // 输出dom
+ })
+document.getElementById('dianji').addEventListener('click',() =>{
+    console.log(this); // window
+ })
+```
+
+.addEventListener前面是dom，所以普通函数触发的时候输出dom，谁调用输出谁，而箭头函数的上一级作用域是全局，所以输出window
+
+### 当this碰到return
+
+返回空对象{}
+
+```actionscript
+function fn()  
+{ 
+    this.user = '追梦子'; 
+    return {};  
+}
+new fn().user    //undefined
+```
+
+返回函数
+
+```actionscript
+function fn()  
+{ 
+    this.user = '追梦子'; 
+    return function aaa(){};
+}
+new fn().user    //undefined
+```
+
+返回数字
+
+```actionscript
+function fn()  
+{ 
+    this.user = '追梦子'; 
+    return 1;
+}
+new fn().user  //追梦子
+```
+
+返回null
+
+```actionscript
+function fn()  
+{ 
+    this.user = '追梦子'; 
+    return null;
+}
+new fn().user  //追梦子
+```
+
+上面的列子主要说明
+**如果返回值是一个引用数据类型（函数，对象都属于object），那么this指向的就是那个返回的对象，如果返回值不是一个对象（基础数据类型，数值，字符串，布尔，null，undefined）那么this还是指向函数的实例。**
+
+https://zhuanlan.zhihu.com/p/57204184
+
+https://segmentfault.com/a/1190000024546545
