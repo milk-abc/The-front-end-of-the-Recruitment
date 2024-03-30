@@ -1,1 +1,6 @@
-react目前存在的问题依然是性能问题，和性能问题带来的复杂优化逻辑的问题。父组件渲染更新会导致所有的子组件渲染，虽然在类组件可以使用purecomponent，函数组件可以使用memo，usememo，usecallback，但是多出来了复杂的性能优化逻辑，而且这些还不一定能满足我们的需要，我们可能还需要自己写diff渲染的代码。但这应该是react本身自己应该具备的功能，不应该让用户还需要去写额外的逻辑去维护性能，对react的扩展性并不友好。
+react目前存在的问题依然是性能问题，和性能问题带来的复杂优化逻辑的问题。
+
+父组件渲染更新会导致所有的子组件渲染，虽然在类组件可以使用purecomponent【props和state不变更就不重新渲染，浅比较】、shouldcomponentupdate，函数组件可以使用memo【缓存组件，props不变更就不重新渲染，浅比较】，usememo【因为props不变更是浅比较，如果传入对象则缓存失效，需要用usememo去缓存对象】，usecallback【因为props不变更是浅比较，如果传入函数则缓存失效，需要用usecallback去缓存函数】，但是多出来了复杂的性能优化逻辑，而且这些还不一定能满足我们的需要，我们可能还需要写自定义props比较的代码。但这应该是react本身自己应该具备的功能，不应该让用户还需要去写额外的逻辑去维护性能，对react的扩展性并不友好。
+
+具体可以看下https://dennisgo.cn/Articles/React/OptimizeCalendar.html
+

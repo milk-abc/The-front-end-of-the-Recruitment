@@ -129,6 +129,79 @@ function ProductPage({ productId, referrer, theme }) {
 }
 ```
 
+##### 指定自定义比较函数
+
+在极少数情况下，最小化memorized组件的props更改可能是不可行的。在这种情况下，你可以提供一个自定义比较函数，React将使用它来比较旧的和新的props，而不是使用浅比较。这个函数作为memo的第二个参数传递。这个函数作为memo的第二个参数传递。它应该仅在新的props与旧的props具有相同的输出时返回true；否则应该返回false。
+
+```react
+const chart=memo(function chart({dataPoints}){
+    //
+},arePropsEqual)
+function arePropsEqual(oldProps,newProps){
+    return (
+        oldProps.dataPoints.length===newProps.dataPoints.length&&
+        oldProps.dataPoints.every((oldPoint,index)=>{
+            const newPoint=newProps.dataPoints[index];
+            return oldPoint.x===newPoint.x&&oldPoint.y===newPoint.y;
+        })
+    )
+}
+```
+
+如果这样做，请使用浏览器开发者工具中的性能面板来确保你的比较函数实际上比重新渲染组件要快。在进行性能测量时，请确保React处于生产模式下运行。
+
+##### 陷阱
+
+如果你提供了一个自定义的arePropsEqual实现，你必须比较每个prop，包括函数。函数通常闭包了父组件的props和state。如果你在oldprops.onclick!==newprops.onclick时返回true，你的组件将在其onclick处理函数中继续“看到”来自先前渲染的props和state，导致非常令人困惑的bug。
+
+避免在arePropsEqual中进行深比较，除非你百分百确定你正在处理的数据结构具有已知有限的深度。深比较可能会变得非常缓慢，并且如果有人稍后更改数据结构，这可能会卡住你的应用数秒钟。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 期待性能更佳逻辑更简单的react
 
 https://www.youtube.com/watch?v=lGEMwh32soc

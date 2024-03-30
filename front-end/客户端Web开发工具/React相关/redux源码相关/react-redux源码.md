@@ -192,9 +192,187 @@ connect主要是要将store注入到对应的组件里去
 
 ###### 基本功能
 
+```react
+// 第一层函数接收mapStateToProps和mapDispatchToProps
+function connect(mapStateToProps, mapDispatchToProps) {
+  //第二层函数是个高阶组件，里面获取context
+  //然后执行mapstatetoprops和mapdispatchtoprops
+  //再将这个结果组合用户的参数作为最终参数渲染wrappedcomponent
+  //wrappedcomponent就是我们使用context包裹的自己的组件
+  return function connectHOC(wrappedComponent) {
+    function connectFunction(props) {
+      //复制一份props到warpperprops
+      const { ...wrapperProps } = props;
+      //获取context的值
+      const context = useContext(ReactReduxContext);
+      const { store } = context; //解构出store
+      const state = store.getState(); //拿到state
+      // 执行mapStateToProps和mapDispatchToProps
+      const stateProps = mapStateToProps(state);
+      const dispatchProps = mapDispatchToProps(store.dispatch);
+      //组装最终的props
+      const actualChildProps = Object.assign(
+        {},
+        stateProps,
+        dispatchProps,
+        wrapperProps
+      );
+      return <wrappedComponent {...actualChildProps}></wrappedComponent>;
+    }
+    return connectFunction;
+  };
+}
+```
+
+##### 触发更新
+
+用上面的Provider和connect替换官方的react-redux其实已经可以渲染出页面了，但是点击按钮还不会有反应，因为我们虽然通过disptach改变了store中的state，但是这种改变并没有触发我们组件的更新。之前Redux那篇文章讲过，可以用store.subscribe来监听state的变化并执行回调，我们这里需要注册的回调时检查我们最终给WrappedComponent的props有没有变化，如果有变化就重新渲染connectfunction，所以我们需要解决两个问题：
+
+1.当我们state变化的时候检查最终给到connnectfunction的参数有没有变化
+
+2.如果这个参数有变化，我们需要重新渲染connectfunction
+
+##### 检查参数变化
+
+要检查参数的变化，我们需要知道上次渲染的参数和本地渲染的参数，然后拿过来比一下就知道了。为了知道上次渲染的参数，我们可以直接在connectfunction里面使用useref将上次渲染的参数记录下来：
+
+```
+//记录上次渲染参数
+const lastChildProps=useRef();
+//首次渲染后【但阻止了浏览器绘制屏幕，在浏览器重新绘制屏幕之前触发】再执行回调
+useLayoutEffect(()=>{
+    //赋值后会立即重新渲染一次，再用新的值绘制屏幕，保证渲染后的值是新值
+	lastChildProps.current=actualChildProps;
+},[]);
+//首先会执行渲染
+render(){}
+```
+
+注意lastChildProps.current是在第一次渲染结束后绘制屏幕前赋值，而且需要使用useLayoutEffect来保证渲染后绘制屏幕前立即同步执行，拿新值绘制屏幕。
+
+因为我们检测参数变化是需要重新计算actualChildProps，计算的逻辑其实都是一样的，
+
+```react
+function childPropsSelector(store, wrapperProps) {
+  const state = store.getState();   // 拿到state
+
+  // 执行mapStateToProps和mapDispatchToProps
+  const stateProps = mapStateToProps(state);
+  const dispatchProps = mapDispatchToProps(store.dispatch);
+
+  return Object.assign({}, stateProps, dispatchProps, wrapperProps);
+}
+```
+
+然后就是注册store的回调，在里面来检测参数是否变了，如果变了就强制更新当前组件，对比两个对象是否相等，React-Redux里面是采用的shalloEqual，也就是浅比较，也就是只对比一层，如果你mapStateToProps返回了好几层结构，比如这样：
+
+```react
+{
+    stateA:{
+        value:1
+    }
+}
+```
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.https://github.com/reduxjs/react-redux/blob/7.x/src/utils/Subscription.js
 
 
 
