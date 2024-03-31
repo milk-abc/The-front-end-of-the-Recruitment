@@ -185,3 +185,5 @@ Function.prototype.bind2=function(context){
 ```
 
 https://github.com/mqyqingfeng/Blog/issues/12github.com/mqyqingfeng/Blog/issues/12
+
+Object.prototype.hasOwnProperty.call(objB,keysA[i])相当于 objB.hasOwnProperty(keysA[i])

@@ -274,6 +274,341 @@ function childPropsSelector(store, wrapperProps) {
 }
 ```
 
+你去改了stateA.value是不会触发重新渲染的，React-Redux这样设计我想是出于性能考虑，如果是深比较，比如递归去比较，比较浪费性能，而且如果有循环引用还可能造成死循环。采用浅比较就需要用户遵循这种范式，不要传入多层结构。
+
+```react
+/**
+ *
+ * Object.is将+0和-0当作不相等，而===把他们当作相等
+ * Object.is把 Number.NaN和Number.NaN当作相等，而===把他们当作不相等
+ * @param y
+ * @returns
+ */
+function is(x, y) {
+  if (x === y) {
+    return x !== 0 || y !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+function shallowEqual(objA, objB) {
+  if (is(objA, objB)) return true;
+  if (
+    typeof objA !== "object" ||
+    objA === null ||
+    typeof objB !== "object" ||
+    objB === null
+  ) {
+    return false;
+  }
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) return false;
+  for (let i = 0; i < keysA.length; i++) {
+    if (
+      !Object.prototype.hasOwnProperty.call(objB, keysA[i]) ||
+      !is(objA[keysA[i]], objB[keysA[i]])
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+```
+
+在回调里面检测参数变化：
+
+```react
+//在subscribe中注册回调，dispatch中才能派发回调
+store.subscribe(()=>{
+    const newChildProps=childPropsSelector(store,wrapperProps);
+    //如果参数变了，记录新的值到lastChildProps上
+    //并且强制更新当前组件
+    if(!shallowEqual(newChildProps,lastChildProps.current)){
+        lastChildProps.current=newChildProps;
+        //需要一个API来强制更新当前组件
+        
+    }
+})
+```
+
+##### 强制更新
+
+要强制更新当前组件的方法不止一个，如果你是用的Class组件，可以直接this.setState({})，老版的React-redux就是这么干的。但是新版React-redux用hook重写了，那我们可以用React提供的useReducer或者useState hook，React-Redux源码用了useReducer，为了跟他保持一致，这边也用useReducer：
+
+```react
+function storeStateUpdatesReducer(count) {
+  return count + 1;
+}
+
+// ConnectFunction里面
+function ConnectFunction(props) {
+  // ... 前面省略n行代码 ... 
+
+  // 使用useReducer触发强制更新
+  const [
+    ,
+    forceComponentUpdateDispatch
+  ] = useReducer(storeStateUpdatesReducer, 0);
+  // 注册回调
+  store.subscribe(() => {
+    const newChildProps = childPropsSelector(store, wrapperProps);
+    if(!shallowEqual(newChildProps, lastChildProps.current)) {
+      lastChildProps.current = newChildProps;
+      forceComponentUpdateDispatch();
+    }
+  });
+
+  // ... 后面省略n行代码 ...
+}
+```
+
+##### 保证组件更新顺序
+
+前面我们的Counter组件使用connect连接了redux store，假如他下面还有个子组件也连接到了store，我们就要考虑他们的回调的 执行顺序的问题了。我们知道React是单向数据流的，参数都是由父组件传给子组件的，现在引入了Redux，即使父组件和子组件都引用了同一个变量count，但是子组件完全可以不从父组件拿这个参数，而是直接从Redux拿，这样就打破了react本来的数据流向。在父->子这种单向数据流中，如果他们的一个公用变量变化了，肯定是父组件先更新，然后参数传给子组件再更新，但是在redux里，数据变成了Redux->父，Redux->子，父与子完全可以根据Redux的数据进行独立更新，而不能完全保证父级先更新，子级再更新的流程。所以React-redux花了不少功夫来手动保证这个更新顺序，React-redux保证这个更新顺序的方案是在redux store外，再单独创建一个监听者类Subscription：
+
+1.Subscription负责处理所有的state变化的回调
+
+2.如果当前连接redux的组件是第一个连接redux的组件，也就是说他是连接redux的根组件，他的state回调直接注册到redux store；同时新建一个Subscription实例Subscription通过context传递给子级。
+
+3.如果当前连接redux的组件不是连接redux的根组件，也就是说他上面有组件已经注册到redux store了，那么他可以拿到上面通过context传下来的subscription，源码里面这个变量叫parentSub，那当前组件的更新回调就注册到parentSub上【这样父组件的state更新dispatch的时候就会执行更新回调更新子组件】。同时再新建一个Subscription实例，替代context上的subscription，继续往下传，也就是说他的子组件的回调会注册到当前subscription上。
+
+4.当state变化了，根组件注册到redux store上的回调会执行更新根组件，同时根组件需要手动执行子组件的回调，子组件回调执行会触发子组件更新，然后子组件再执行自己subscription上注册的回调，触发孙子组件更新，孙子组件再调用注册到自己Subscription上的回调。。。。这样就是实现了从根组件开始，一层一层更新子组件的目的，保证了父—>子这样的更新顺序。
+
+##### Subscription类
+
+所以我们先新建一个Subscription类：
+
+```react
+export default class Subscription {
+  constructor(store, parentSub) {
+    this.store = store;
+    this.parentSub = parentSub;
+    this.listeners = [];
+    this.handleChangeWrapper = this.handleChangeWrapper.bind(this);
+  }
+  //子组件注册回到到subscription上
+  addNestedSub(listener) {
+    this.listeners.push(listener);
+  }
+  //执行子组件的回调
+  notifyNestedSubs() {
+    const length = this.listeners.length;
+    for (let i = 0; i < length; i++) {
+      const callback = this.listeners[i];
+      callback();
+    }
+  }
+  //回调函数的包装
+  handleChangeWrapper() {
+    if (this.onStateChange) {
+      this.onStateChange();
+    }
+  }
+  //注册回调的函数
+  //如果Parentsub有值，就将回调注册到parentsub上
+  //如果parentsub没值，那当前组件就是根组件，回调注册到redux store上
+  trySubscribe() {
+    this.parentSub
+      ? this.parentSub.addNestedSub(this.handleChangeWrapper)
+      : this.store.subscribe(this.handleChangeWrapper);
+  }
+}
+```
+
+##### 改造Provider
+
+然后在我们前面自己实现的react-redux里面，我们的根组件始终是Provider，所以Provider需要实例化一个Subscription并放到context上，而且每次state更新的需要手动调用子组件回调，代码改造如下：
+
+```react
+import React,{useMemo,useEffect} from 'react';
+import ReactReduxContext from './Context';
+import Subscription from './Subscription';
+function Provider(props){
+    const {store,children}=props;
+    //这是传递的context
+    //里面放入store和Subscription实例
+    const contextValue = useMemo(() => {
+    const subscription = new Subscription(store)
+    // 注册回调为通知子组件，这样就可以开始层级通知了
+    subscription.onStateChange = subscription.notifyNestedSubs
+    return {
+      store,
+      subscription
+    }
+  }, [store])
+    //拿到之前的state的值
+    const previousState = useMemo(() => store.getState(), [store]);
+    //每次previousState变化的时候
+    //用notifyNestedSubs通知子组件
+    useEffect(()=>{
+        const {subscription}=contextValue;
+        //将Onstatechange【更新回调函数】方法加入注册，注册回调的函数
+        subscription.trySubscribe();
+        if(previousState!==store.getState()){
+            subscription.notifyNestedSubs();
+        }
+    },[contextValue,previousState])
+    //返回ReactReduxContext包裹的组件，传入contextValue
+    //里面的内容就直接是children，我们不动他
+    return (
+    <ReactReduxContext.Provider value={contextValue}>
+      {children}
+    </ReactReduxContext.Provider>
+  )
+}
+export default Provider;
+```
+
+##### 改造connect
+
+有了subscription类，connect就不能直接注册到store了，而是应该注册到父级subscription上，更新的时候除了更新自己还要通知子组件更新。在渲染包裹的组件时，也不能直接渲染了，而是应该再次使用Context.Provider包裹下，传入修改过的contextValue,这个contextValue里面的subscription应该替换为自己的。改造后代码如下：
+
+```react
+import React, { useContext, useRef, useLayoutEffect, useReducer } from 'react';
+import ReactReduxContext from './Context';
+import shallowEqual from './shallowEqual';
+import Subscription from './Subscription';
+
+function storeStateUpdatesReducer(count) {
+  return count + 1;
+}
+function connect(
+  mapStateToProps = () => {}, 
+  mapDispatchToProps = () => {}
+  ) {
+  function childPropsSelector(store, wrapperProps) {
+    const state = store.getState();   // 拿到state
+
+    // 执行mapStateToProps和mapDispatchToProps
+    const stateProps = mapStateToProps(state);
+    const dispatchProps = mapDispatchToProps(store.dispatch);
+
+    return Object.assign({}, stateProps, dispatchProps, wrapperProps);
+  }
+
+  return function connectHOC(WrappedComponent) {
+    function ConnectFunction(props) {
+      const { ...wrapperProps } = props;
+
+      const contextValue = useContext(ReactReduxContext);
+
+      const { store, subscription: parentSub } = contextValue;  // 解构出store和parentSub
+
+      const actualChildProps = childPropsSelector(store, wrapperProps);
+      //更新前的旧值
+      const lastChildProps = useRef();
+      useLayoutEffect(() => {
+        lastChildProps.current = actualChildProps;
+      }, [actualChildProps]);
+
+      const [
+        ,
+        forceComponentUpdateDispatch
+      ] = useReducer(storeStateUpdatesReducer, 0)
+
+      // 新建一个subscription实例
+      const subscription = new Subscription(store, parentSub);
+
+      // state回调抽出来成为一个方法
+      const checkForUpdates = () => {
+        const newChildProps = childPropsSelector(store, wrapperProps);
+        // 如果参数变了，记录新的值到lastChildProps上
+        // 并且强制更新当前组件
+        if(!shallowEqual(newChildProps, lastChildProps.current)) {
+          lastChildProps.current = newChildProps;
+
+          // 需要一个API来强制更新当前组件
+          forceComponentUpdateDispatch();
+
+          // 然后通知子级更新
+          subscription.notifyNestedSubs();
+        }
+      };
+
+      // 使用subscription注册回调
+      subscription.onStateChange = checkForUpdates;
+      subscription.trySubscribe();
+
+      // 修改传给子级的context
+      // 将subscription替换为自己的
+      const overriddenContextValue = {
+        ...contextValue,
+        subscription
+      }
+
+      // 渲染WrappedComponent
+      // 再次使用ReactReduxContext包裹，传入修改过的context
+      return (
+        <ReactReduxContext.Provider value={overriddenContextValue}>
+          <WrappedComponent {...actualChildProps} />
+        </ReactReduxContext.Provider>
+      )
+    }
+
+    return ConnectFunction;
+  }
+}
+
+export default connect;
+```
+
+##### 总结：
+
+1. `React-Redux`是连接`React`和`Redux`的库，同时使用了`React`和`Redux`的API。
+2. `React-Redux`主要是使用了`React`的`context api`来传递`Redux`的`store`。
+3. `Provider`的作用是接收`Redux store`并将它放到`context`上传递下去。
+4. `connect`的作用是从`Redux store`中选取需要的属性传递给包裹的组件。
+5. `connect`会自己判断是否需要更新，判断的依据是需要的`state`是否已经变化了。
+6. `connect`在判断是否变化的时候使用的是浅比较，也就是只比较一层，所以在`mapStateToProps`和`mapDispatchToProps`中不要反回多层嵌套的对象。
+7. 为了解决父组件和子组件各自独立依赖`Redux`，破坏了`React`的`父级->子级`的更新流程，`React-Redux`使用`Subscription`类自己管理了一套通知流程。
+8. 只有连接到`Redux`最顶级的组件才会直接注册到`Redux store`，其他子组件都会注册到最近父组件的`subscription`实例上。
+9. 通知的时候从根组件开始依次通知自己的子组件，子组件接收到通知的时候，先更新自己再通知自己的子组件。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
