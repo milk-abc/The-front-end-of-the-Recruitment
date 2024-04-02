@@ -38,7 +38,34 @@ var getLeastNumbers = function (arr, k) {
   quicksort(arr, 0, arr.length - 1);
   return arr.slice(0, k);
 };
+function findKthLargest(nums, k) {
+  const quickSort = (arr, low, high) => {
+    if (low < high) {
+      const privot = paritition(arr, low, high);
+      quickSort(arr, low, privot - 1);
+      quickSort(arr, privot + 1, high);
+    }
+  };
+  const paritition = (arr, low, high) => {
+    let privot = arr[low];
+    while (low < high) {
+      while (low < high && arr[high] >= privot) {
+        high--;
+      }
+      arr[low] = arr[high];
+      while (low < high && arr[low] <= privot) {
+        low++;
+      }
+      arr[high] = arr[low];
+    }
+    arr[low] = privot;
+    return low;
+  };
+  quickSort(nums, 0, nums.length - 1);
+  return nums[k - 1];
+}
 let arr = [1, 4, 1, 2, 1];
-arr1 = getLeastNumbers(arr, 3);
+// arr1 = getLeastNumbers(arr, 3);
+arr1 = findKthLargest(arr, 3);
 console.log(arr);
 console.log(arr1);

@@ -267,7 +267,256 @@ function workLoop(deadline){
 }
 ```
 
-因为我们是在Fiber树完全构建后再执行的commit，而且有一个变量workInPro
+因为我们是在Fiber树完全构建后再执行的commit，而且有一个变量workInProgressRoot指向了Fiber的根节点，所以我们可以直接把workInProgressRoot拿过来递归渲染就行了：
+
+```react
+//统一操作DOM
+function commitRoot(){
+    commitRootImpl(workInProgressRoot.child);//开始递归
+    workInProgressRoot=null;//操作完后将workInProgressRoot重置
+}
+function commitRootImpl(fiber){
+    if(!fiber){
+        return;
+    }
+    const parentDom=fiber.return.dom;
+    parentDom.appendChild(fiber.dom);
+    //递归操作子元素和兄弟元素
+    commitRootImpl(fiber.child);
+    commitRootImpl(fiber.sibling);
+}
+```
+
+##### reconcile调和
+
+reconcile其实就是虚拟DOM树的diff操作，需要删除不需要的节点，更新修改过的节点，添加新的节点。为了在中断后能回到工作位置，我们还需要一个变量currentRoot，然后在fiber节点里添加一个属性alternate，这个属性指向上一次运行的根节点，也就是currentRoot。currentRoot会在第一次render后的commit阶段赋值，也就是每次计算完后都会把当次状态记录在alternate上，后面更新了就可以把alternate拿出来跟新的状态做diff。然后performUnitOfWork里面需要添加调和子元素的代码，可以新增一个函数reconcileChildren。这个函数里面不能简单的创建新节点了，而是要将老节点跟新节点拿来对比，对比逻辑如下：
+
+1.如果新老节点类型一样，复用老节点DOM，更新props
+
+2.如果类型不一样，而且新的节点存在，创建新节点替换老节点
+
+3.如果类型不一样，没有新节点，有老节点，删除老节点
+
+注意删除老节点的操作是直接将oldFiber加上一个删除标记就行，同时用一个全局变量deletions记录所有需要删除的节点：
+
+```react
+// 对比oldFiber和当前element
+      const sameType = oldFiber && element && oldFiber.type === element.type;  //检测类型是不是一样
+      // 先比较元素类型
+      if(sameType) {
+        // 如果类型一样，复用节点，更新props
+        newFiber = {
+          type: oldFiber.type,
+          props: element.props,
+          dom: oldFiber.dom,
+          return: workInProgressFiber,
+          alternate: oldFiber,          // 记录下上次状态
+          effectTag: 'UPDATE'           // 添加一个操作标记
+        }
+      } else if(!sameType && element) {
+        // 如果类型不一样，有新的节点，创建新节点替换老节点
+        newFiber = {
+          type: element.type,
+          props: element.props,
+          dom: null,                    // 构建fiber时没有dom，下次perform这个节点是才创建dom
+          return: workInProgressFiber,
+          alternate: null,              // 新增的没有老状态
+          effectTag: 'REPLACEMENT'      // 添加一个操作标记
+        }
+      } else if(!sameType && oldFiber) {
+        // 如果类型不一样，没有新节点，有老节点，删除老节点
+        oldFiber.effectTag = 'DELETION';   // 添加删除标记
+        deletions.push(oldFiber);          // 一个数组收集所有需要删除的节点
+      }
+```
+
+然后就是在commit阶段处理真正的DOM操作，具体的操作是根据我们的effectTag来判断的：
+
+```react
+function commitRootImpl(fiber) {
+  if(!fiber) {
+    return;
+  }
+
+  const parentDom = fiber.return.dom;
+  if(fiber.effectTag === 'REPLACEMENT' && fiber.dom) {
+    parentDom.appendChild(fiber.dom);
+  } else if(fiber.effectTag === 'DELETION') {
+    parentDom.removeChild(fiber.dom);
+  } else if(fiber.effectTag === 'UPDATE' && fiber.dom) {
+    // 更新DOM属性
+    updateDom(fiber.dom, fiber.alternate.props, fiber.props);
+  }
+
+  // 递归操作子元素和兄弟元素
+  commitRootImpl(fiber.child);
+  commitRootImpl(fiber.sibling);
+}
+```
+
+替换和删除的DOM操作都比较简单，更新属性的会稍微麻烦点，需要再写一个辅助函数updateDom来实现：
+
+```react
+// 更新DOM的操作
+function updateDom(dom, prevProps, nextProps) {
+  // 1. 过滤children属性
+  // 2. 老的存在，新的没了，取消
+  // 3. 新的存在，老的没有，新增
+  Object.keys(prevProps)
+    .filter(name => name !== 'children')
+    .filter(name => !(name in nextProps))
+    .forEach(name => {
+      if(name.indexOf('on') === 0) {
+        dom.removeEventListener(name.substr(2).toLowerCase(), prevProps[name], false);
+      } else {
+        dom[name] = '';
+      }
+    });
+
+  Object.keys(nextProps)
+    .filter(name => name !== 'children')
+    .forEach(name => {
+      if(name.indexOf('on') === 0) {
+        dom.addEventListener(name.substr(2).toLowerCase(), nextProps[name], false);
+      } else {
+        dom[name] = nextProps[name];
+      }
+    });
+}
+```
+
+##### 函数组件
+
+函数组件是React里面很常见的一种组件，我们前面的React架构其实已经写好了，我们这里来支持下函数组件。我们之前的fiber节点上的type都是DOM节点的类型，比如h1什么的，但是函数组件的节点type其实就是一个函数了，我们需要对这种节点进行单独处理。
+
+首先需要在更新的时候检测当前节点是不是函数组件，如果是，children的处理逻辑会稍微不一样：
+
+```react
+// performUnitOfWork里面
+// 检测函数组件
+function performUnitOfWork(fiber) {
+  const isFunctionComponent = fiber.type instanceof Function;
+  if(isFunctionComponent) {
+    updateFunctionComponent(fiber);
+  } else {
+    updateHostComponent(fiber);
+  }
+
+  // ...下面省略n行代码...
+}
+
+function updateFunctionComponent(fiber) {
+  // 函数组件的type就是个函数，直接拿来执行可以获得DOM元素
+  const children = [fiber.type(fiber.props)];
+
+  reconcileChildren(fiber, elements);
+}
+
+// updateHostComponent就是之前的操作，只是单独抽取了一个方法
+function updateHostComponent(fiber) {
+  if(!fiber.dom) {
+    fiber.dom = createDom(fiber);   // 创建一个DOM挂载上去
+  } 
+
+  // 将我们前面的vDom结构转换为fiber结构
+  const elements = fiber.props.children;
+
+  // 调和子元素
+  reconcileChildren(fiber, elements);
+}
+```
+
+然后在我们提交DOM操作的时候因为函数组件没有DOM元素，所以需要注意两点：
+
+1.获取父级DOM元素的时候需要递归往上找真正的DOM
+
+2.删除节点的时候需要递归往下找真正的节点
+
+我们来修改下commitRootImpl:
+
+```react
+function commitRootImpl() {
+  // const parentDom = fiber.return.dom;
+  // 向上查找真正的DOM
+  let parentFiber = fiber.return;
+  while(!parentFiber.dom) {
+    parentFiber = parentFiber.return;
+  }
+  const parentDom = parentFiber.dom;
+
+  // ...这里省略n行代码...
+
+  if{fiber.effectTag === 'DELETION'} {
+    commitDeletion(fiber, parentDom);
+  }
+}
+
+function commitDeletion(fiber, domParent) {
+  if(fiber.dom) {
+    // dom存在，是普通节点
+    domParent.removeChild(fiber.dom);
+  } else {
+    // dom不存在，是函数组件,向下递归查找真实DOM
+    commitDeletion(fiber.child, domParent);
+  }
+}
+```
+
+##### 实现useState
+
+useState是React Hooks里面的一个API，相当于之前class Component里面的state，用来管理组件内部状态，现在我们已经有一个简化版的React了，我们也可以尝试下来实现这个API。
+
+##### 简单版
+
+我们还是从用法入手来实现最简单的功能，我们一般使用useState是这样的：
+
+```react
+function App(props) {
+  const [count, setCount] = React.useState(1);
+  const onClickHandler = () => {
+    setCount(count + 1);
+  }
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={onClickHandler}>Count+1</button>
+    </div>
+  );
+}
+
+ReactDOM.render(
+  <App title="Fiber Demo"/>,
+  document.getElementById('root')
+);
+```
+
+上述代码可以看出，我们的useState接收一个初始值，返回一个数组，里面有这个state的当前值和改变state的方法，需要注意的是App作为一个函数组件，每次render的时候都会运行，也就是说里面的局部变量每次render的时候都会重置，那我们的state就不能作为一个局部变量，而是应该作为一个全部变量存储：
+
+```react
+let state = null;
+function useState(init) {
+
+  state = state === null ? init : state;
+
+  // 修改state的方法
+  const setState = value => {
+    state = value;
+
+    // 只要修改了state，我们就需要重新处理节点
+    workInProgressRoot = {
+      dom: currentRoot.dom,
+      props: currentRoot.props,
+      alternate: currentRoot
+    }
+
+    // 修改nextUnitOfWork指向workInProgressRoot，这样下次就会处理这个节点了
+    nextUnitOfWork = workInProgressRoot;
+    deletions = [];
+  }
+
+  return [state, setState]
+}
+```
 
 
 
@@ -276,6 +525,130 @@ function workLoop(deadline){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+总结：
+
+我们写的JSX代码被babel
+
+react实现分为调度器，协调器，渲染器
+
+调度器做的是在浏览器空闲的时候执行代码，优先级
+
+协调器做的是虚拟dom diff的操作，找到需要更新的地方，异步可中断
+
+渲染器做的是将需要更新的进行真正的DOM渲染，不可中断
+
+全程是fiber数据结构贯穿，fiber是一个树形链表结构，return，child，sibling，属性alternate保存当前的oldfiber结构
 
 
 

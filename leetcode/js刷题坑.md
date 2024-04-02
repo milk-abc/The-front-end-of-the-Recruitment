@@ -70,4 +70,19 @@ const arr:boolean[][]=[];
     }
 ```
 
+
+while (low < high && arr[high] >= privot) {
+        high--;
+}
+不等于
+while (low < high) {
+    if(arr[high] >= privot){
+        hig--;
+    }
+}
+进入死循环需要关注while
+出错时需要关注for的边界条件，指针为null的边界条件
+5/2！=2  
+0.1+0.2！==0.3
+
 https://juejin.cn/post/6844904097141751822
