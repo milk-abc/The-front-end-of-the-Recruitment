@@ -40,7 +40,7 @@ export function scheduleRoot(rootFiber) {
     workInProgressRoot.lastEffect =
     workInProgressRoot.nextEffect =
       null;
-  nextUnitOfWork = rootFiber;
+  nextUnitOfWork = workInProgressRoot;
 }
 /**
  * beginWork  1.创建此fiber的真实DOM  通过虚拟DOM创建fiber树结构
@@ -174,7 +174,9 @@ function createDOM(workingInProgressFiber) {
   }
 }
 function updateDOM(stateNode, oldProps, newProps) {
-  setProps(stateNode, oldProps, newProps);
+  if (stateNode && stateNode.setAttribute) {
+    setProps(stateNode, oldProps, newProps);
+  }
 }
 function reconcileChildren(workingInProgressFiber, newChildren) {
   //2.通过虚拟DOM创建fiber子树
@@ -182,19 +184,29 @@ function reconcileChildren(workingInProgressFiber, newChildren) {
   //如果说workingInProgressFiber有alternate属性并且alternate有child属性
   let oldFiber =
     workingInProgressFiber.alternate && workingInProgressFiber.alternate.child;
+  if (oldFiber)
+    oldFiber.firstEffect = oldFiber.lastEffect = oldFiber.nextEffect = null;
   let previousFiber;
-  if (Array.isArray(newChildren) || oldFiber) {
+  let index = 0;
+  while (index < newChildren.length || oldFiber) {
+    let child = newChildren[index];
     let childFiber;
-    newChildren.forEach((child, index) => {
-      let tag;
-      if (child && child.type === ELEMENT_TEXT) {
-        tag = TAG_TEXT; //这是一个文本节点
-      } else if (child && typeof child.type === "string") {
-        tag = TAG_HOST; //如果type是字符串，那么这是一个原生DOM节点
-      }
-      const sameType = oldFiber && child && oldFiber.type === child.type;
-      if (sameType) {
-        //说明老fiber和新虚拟DOM类型一样，可以复用老的DOM节点，更新即可
+    let tag;
+    if (child && child.type === ELEMENT_TEXT) {
+      tag = TAG_TEXT; //这是一个文本节点
+    } else if (child && typeof child.type === "string") {
+      tag = TAG_HOST; //如果type是字符串，那么这是一个原生DOM节点
+    }
+    const sameType = oldFiber && child && oldFiber.type === child.type;
+    if (sameType) {
+      //说明老fiber和新虚拟DOM类型一样，可以复用老的DOM节点，更新即可
+      if (oldFiber.alternate) {
+        childFiber = oldFiber.alternate; //如果类型一致，并且存在上上次Fiber结构，就可以复用
+        childFiber.props = child.props;
+        childFiber.alternate = oldFiber;
+        childFiber.effectTag = UPDATE;
+        childFiber.nextEffect = null;
+      } else {
         childFiber = {
           tag: oldFiber.tag,
           type: oldFiber.type,
@@ -202,42 +214,44 @@ function reconcileChildren(workingInProgressFiber, newChildren) {
           stateNode: oldFiber.stateNode,
           return: workingInProgressFiber, //父fiber
           alternate: oldFiber, //让新的fiber的alternate指向老的fiber节点
+          effectTag: UPDATE, //这个fiber对应的DOM节点需要被更新到父dom中去
+          nextEffect: null, //下一个有副作用的节点，effectlist的顺序和完成顺序一样
+        };
+      }
+    } else {
+      //对每个子节点新建一个fiber
+      if (child) {
+        childFiber = {
+          tag, //TAG_HOST
+          type: child.type, //DOM节点类型div p  div
+          props: child.props,
+          stateNode: null, //div还没创建DOM元素
+          return: workingInProgressFiber, //父fiber
           effectTag: PLACEMENT, //这个fiber对应的DOM节点需要被插入到父dom中去
           nextEffect: null, //下一个有副作用的节点，effectlist的顺序和完成顺序一样
         };
-      } else {
-        //对每个子节点新建一个fiber
-        if (child) {
-          childFiber = {
-            tag, //TAG_HOST
-            type: child.type, //DOM节点类型div p  div
-            props: child.props,
-            stateNode: null, //div还没创建DOM元素
-            return: workingInProgressFiber, //父fiber
-            effectTag: PLACEMENT, //这个fiber对应的DOM节点需要被插入到父dom中去
-            nextEffect: null, //下一个有副作用的节点，effectlist的顺序和完成顺序一样
-          };
-        }
-        if (oldFiber) {
-          oldFiber.effectTag = DELETION;
-          deletions.push(oldFiber);
-        }
       }
       if (oldFiber) {
-        oldFiber = oldFiber.sibling; //oldFiber指针往后移动一次
+        oldFiber.effectTag = DELETION;
+        deletions.push(oldFiber);
       }
-      if (childFiber) {
-        //建立父子兄弟节点之间的fiber的关系
-        if (index === 0) {
-          workingInProgressFiber.child = childFiber;
-        } else {
-          previousFiber.sibling = childFiber;
-        }
-        previousFiber = childFiber;
+    }
+    if (oldFiber) {
+      oldFiber = oldFiber.sibling; //oldFiber指针往后移动一次
+    }
+    if (childFiber) {
+      //建立父子兄弟节点之间的fiber的关系
+      if (index === 0) {
+        workingInProgressFiber.child = childFiber;
+      } else {
+        previousFiber.sibling = childFiber;
       }
-    });
+      previousFiber = childFiber;
+    }
+    index += 1;
   }
 }
+
 function completeUnitOfWork(workingInProgressFiber) {
   //从C1最底层最左边开始向右向上收集，C1的firstEffect和lastEffect都为null
   console.log("completeUnitOfWork", workingInProgressFiber.props?.id);
