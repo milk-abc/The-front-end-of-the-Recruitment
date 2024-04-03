@@ -4,6 +4,8 @@ export const TAG_ROOT = Symbol.for("TAG_ROOT");
 export const TAG_HOST = Symbol.for("TAG_HOST");
 //这是文本节点
 export const TAG_TEXT = Symbol.for("TAG_TEXT");
+export const TAG_CLASS = Symbol("TAG_CLASS");
+export const TAG_FUNCTION_COMPONENT = Symbol("TAG_FUNCTION_COMPONENT");
 //表示这是一个文本元素
 export const ELEMENT_TEXT = Symbol.for("ELEMENT_TEXT");
 //插入节点

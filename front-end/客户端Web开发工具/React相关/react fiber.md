@@ -82,6 +82,10 @@ https://juejin.cn/post/7225957841319379005#heading-3
 
 ![image-20240402010414353](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240402010414353.png)
 
+![image-20240403225728148](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240403225728148.png)
+
+初始化渲染时会先生成workInProgressRoot，渲染完成后会将workInProgressRoot赋给currentRoot，并将workInProgressRoot置为空。奇数次更新时会生成新的workInProgressRoot，workInProgressRoot的alternate指针指向第一次的currentRoot。偶数次更新时，会基于第一次生成的fiber进行修改，因为当前挂载好的是奇数次更新时的currentRoot，
+
 ![image-20240402094740980](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240402094740980.png)
 
 首先 ，初始化时，从根节点开始给每个节点创建fiber对象并创建真实DOM节点，包括tag,type,return,child,sibling,nextEffect,effecttag；完成后从左到右从下而上构建effectlist，根据effectList将真实DOM节点挂载渲染到页面上
