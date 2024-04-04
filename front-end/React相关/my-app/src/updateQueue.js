@@ -3,19 +3,16 @@ export class Update {
     this.payload = payload;
   }
 }
-// 给setState创建事件更新队列
+//数据结构是一个单链表
 export class UpdateQueue {
   constructor() {
     this.firstUpdate = null;
     this.lastUpdate = null;
   }
   enqueueUpdate(update) {
-    // 如果this.lastUpdate不存在，说明队列还没开始创建，则把update赋值给 头和尾
     if (this.lastUpdate === null) {
       this.firstUpdate = this.lastUpdate = update;
-    }
-    // 如果this.lastUpdate尾存在，说明队列已经存在，将update更新事件加到上次队列之后，并把update设置为队列尾
-    else {
+    } else {
       this.lastUpdate.nextUpdate = update;
       this.lastUpdate = update;
     }

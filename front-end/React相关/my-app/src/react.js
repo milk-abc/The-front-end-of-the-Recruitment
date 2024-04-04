@@ -1,4 +1,6 @@
 import { ELEMENT_TEXT } from "./constants";
+import { scheduleRoot } from "./schedule";
+import { Update, UpdateQueue } from "./updateQueue";
 /**
  * 创建元素(虚拟DOM)的方法
  * @param {*} type 元素的类型 div span p
@@ -25,8 +27,24 @@ function createElement(type, config, ...children) {
     },
   };
 }
+class Component {
+  constructor(props) {
+    this.props = props;
+  }
+  setState(payload) {
+    //可能是对象，也可能是一个函数
+    let update = new Update(payload);
+    // this.updateQueue = new updateQueue();
+    // this.updateQueue.enqueueUpdate(update);
+    //updateQueue其实是放在此类组件对应的fiber节点的internalFiber上
+    this.internalFiber.updateQueue.enqueueUpdate(update);
+    scheduleRoot(); //从当前节点开始调度
+  }
+}
+Component.prototype.isReactComponent = {}; //类组件
 
 const React = {
   createElement,
+  Component,
 };
 export default React;
