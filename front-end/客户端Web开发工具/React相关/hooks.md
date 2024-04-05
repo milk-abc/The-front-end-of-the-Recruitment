@@ -110,7 +110,13 @@ useEffect(() => {
 
 ![image-20240315172621625](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240315172621625.png)
 
-useEffect是在真实DOM渲染完成【componentdidmount,componentdidupdate】后执行，存在清理函数的时候先运行清理函数再运行useEffect
+useEffect是在真实DOM渲染完成【componentdidmount,componentdidupdate】后执行，存在清理函数的时候先运行清理函数再运行useEffect。
+
+它跟class组件中的componentDidMount、componentDidUpdate和componentWillUnmount具有相同的用途，只不过被合并成了一个API。
+
+![image-20240405173045377](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240405173045377.png)
 
 useLayoutEffect是在渲染前执行。
+
+useCallback缓存的是函数，useMemo缓存的是对象
 

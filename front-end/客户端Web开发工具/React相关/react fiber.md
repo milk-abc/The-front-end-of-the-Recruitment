@@ -88,7 +88,9 @@ https://juejin.cn/post/7225957841319379005#heading-3
 
 ![image-20240402094740980](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240402094740980.png)
 
-首先 ，初始化时，从根节点开始给每个节点创建fiber对象并创建真实DOM节点，包括tag,type,return,child,sibling,nextEffect,effecttag；完成后从左到右从下而上构建effectlist，根据effectList将真实DOM节点挂载渲染到页面上
+首先 ，初始化时，从根节点开始给每个节点创建fiber对象并创建真实DOM节点，包括tag,type,return,child,sibling,nextEffect,effecttag；完成后从左到右从下而上构建effectlist；然后在commit阶段根据effectList将真实DOM节点挂载渲染到页面上。
+
+
 
 
 

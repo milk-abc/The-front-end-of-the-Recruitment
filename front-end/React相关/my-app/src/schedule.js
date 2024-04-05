@@ -20,10 +20,12 @@ import { Update, UpdateQueue } from "./updateQueue";
  * render阶段有两个任务 1.根据虚拟DOM生成fiber树 2.收集effectlist
  * commit阶段，进行DOM更新创建阶段，此阶段不能暂停，要一气呵成
  */
-let workInProgressRoot = null;
+let workInProgressRoot = null; //正在渲染的根ROOT fiber
 let nextUnitOfWork = null;
 let currentRoot = null; //渲染成功之后当前根RootFiber
 let deletions = []; //删除的节点我们并不放在effect list里，所以需要单独记录并执行
+let progressFiber = null; //正在工作中的fiber
+let hookIndex = 0; //hook的索引
 export function scheduleRoot(rootFiber) {
   //rootFiber参数指的是当前更新时的fiber
   //{tag:TAG_ROOT,stateNode:container,props:{children:[element]}}
@@ -180,6 +182,10 @@ function beginWork(workingInProgressFiber) {
   }
 }
 function updateFunctionComponent(currentFiber) {
+  progressFiber = currentFiber;
+  hookIndex = 0;
+  progressFiber.hooks = [];
+
   const newChildren = [currentFiber.type(currentFiber.props)];
   reconcileChildren(currentFiber, newChildren);
 }
@@ -357,5 +363,34 @@ function completeUnitOfWork(workingInProgressFiber) {
       returnFiber.lastEffect = workingInProgressFiber;
     }
   }
+}
+export function useReducer(reducer, initialValue) {
+  let newHook =
+    progressFiber.alternate &&
+    progressFiber.alternate.hooks &&
+    progressFiber.alternate.hooks[hookIndex];
+  if (newHook) {
+    //更新渲染
+    newHook.state = newHook.updateQueue.forceUpdate(newHook.state);
+  } else {
+    //初始化渲染
+    newHook = {
+      state: initialValue,
+      updateQueue: new UpdateQueue(),
+    };
+  }
+  const dispatch = (action) => {
+    let payload = reducer ? reducer(newHook.state, action) : action;
+    newHook.updateQueue.enqueueUpdate(new Update(payload)); //得到新的state
+    //使用新的state重新调度
+    scheduleRoot();
+  };
+  progressFiber.hooks[hookIndex] = newHook;
+  hookIndex += 1;
+  return [newHook.state, dispatch];
+}
+export function useState(initialValue) {
+  //dispatch就相当于setState
+  return useReducer(null, initialValue);
 }
 requestIdleCallback(workLoop, { timeout: 500 });
