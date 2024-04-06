@@ -43,7 +43,11 @@ yarn add cross-env -D
 
 ##### 6.配置plugin
 
-用于webpack功能的扩展
+用于webpack功能的扩展。
+
+htmlwebpackplugin是为了将js代码插入到html中，展示到浏览器中
+
+Loader只能编译转换Js，但plugin更强大
 
 
 
