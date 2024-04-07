@@ -9,6 +9,7 @@
  */
 const { resolve } = require("path");
 const htmlWebPlugin = require("html-webpack-plugin");
+const MdToHtmlPlugin = require("./plugins/md-to-html-plugin");
 module.exports = {
   mode: "development",
   entry: resolve(__dirname, "src/app.js"),
@@ -39,6 +40,10 @@ module.exports = {
   plugins: [
     new htmlWebPlugin({
       template: resolve(__dirname, "index.html"),
+    }),
+    new MdToHtmlPlugin({
+      template: resolve(__dirname, "test.md"),
+      filename: "test.html",
     }),
   ],
   devServer: {
