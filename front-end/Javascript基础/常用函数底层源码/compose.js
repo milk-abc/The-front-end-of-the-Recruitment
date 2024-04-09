@@ -4,6 +4,11 @@ const compose = (...arr) => {
   }
   return arr.reduce((a, b) => {
     return (...args) => {
+      /**
+       * 可以整合为a(b(c(d(...args))))
+       * 第一次是()=>a(b([内部]))；每次都是从内部插入扩开
+       * 第二个是()=>a(b(c()))
+       */
       return a(b(...args));
     };
   });

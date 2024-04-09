@@ -1,12 +1,14 @@
-为什么需要用到call,apply,bind?
+为什么需要用到 call,apply,bind?
+
+简单总结: 函数.call(对象，参数)->函数(参数)过程中 this 指向对象，在当前作用域借用一下该函数
 
 1.对象的继承
 
 2.借用方法
 
-**关键点：A.call/apply(B)将A函数中的this指向B，并执行A函数，只不过call传的是一个个参数，apply传的是参数数组；A.bind(B)只改变this指向但不执行函数。**
+**关键点：A.call/apply(B)将 A 函数中的 this 指向 B，并执行 A 函数，只不过 call 传的是一个个参数，apply 传的是参数数组；A.bind(B)只改变 this 指向但不执行函数。**
 
-一、call的实现
+一、call 的实现
 
 ```
 var foo={
@@ -18,17 +20,17 @@ function bar(){
 bar.call(foo);
 ```
 
-1.call改变了this的指向，指向到foo
+1.call 改变了 this 的指向，指向到 foo
 
-2.bar函数执行
+2.bar 函数执行
 
 模拟实现的步骤可以分为：
 
-1.将函数设为对象的属性  foo.fn=bar
+1.将函数设为对象的属性 foo.fn=bar
 
-2.执行该函数  foo.fn()
+2.执行该函数 foo.fn()
 
-3.删除该属性  delete foo.fn
+3.删除该属性 delete foo.fn
 
 ```
 var foo={
@@ -47,7 +49,7 @@ bar.call2(foo);
 
 需注意：
 
-1.this可以传null，当为null，this指向window
+1.this 可以传 null，当为 null，this 指向 window
 
 2.函数可以有返回值
 
@@ -101,7 +103,7 @@ bar.call2(foo);
 </html>
 ```
 
-二、apply的实现，类似call，不过在参数那里需要注意一下
+二、apply 的实现，类似 call，不过在参数那里需要注意一下
 
 ```
 Function.prototype.apply2=function(obj,arg){
@@ -119,9 +121,9 @@ Function.prototype.apply2=function(obj,arg){
 }
 ```
 
-三、bind的实现
+三、bind 的实现
 
-**bind()**方法创建一个新的函数，在bind()被调用时，这个新函数的this被指定为bind()的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
+**bind()**方法创建一个新的函数，在 bind()被调用时，这个新函数的 this 被指定为 bind()的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
 
 ```
 function LateBloomer() {
@@ -143,7 +145,7 @@ var flower = new LateBloomer();
 flower.bloom();  // 一秒钟后, 调用 'declare' 方法
 ```
 
-版本1：实现传参
+版本 1：实现传参
 
 ```
 Function.prototype.bind2=function(context){
@@ -156,7 +158,7 @@ Function.prototype.bind2=function(context){
 }
 ```
 
-版本2：实现可new的bind；当bind返回的函数作为构造函数时，bind时指定的this值会失效，this值指向新的实例，但传入的参数依然生效
+版本 2：实现可 new 的 bind；当 bind 返回的函数作为构造函数时，bind 时指定的 this 值会失效，this 值指向新的实例，但传入的参数依然生效
 
 ```
 Function.prototype.bind2=function(context){
