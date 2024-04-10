@@ -1,6 +1,6 @@
 ## 一、是什么
 
-`typescript` 和 `javascript`几乎一样，拥有相同的数据类型，另外在`javascript`基础上提供了更加实用的类型供开发使用
+`typescript` 和 `javascript`几乎一样，拥有相同的数据类型，另外在`javascript`基础上提供了更加实用的类型供开发使用。
 
 在开发阶段，可以为明确的变量定义为某种类型，这样`typescript`就能在编译阶段进行类型检查，当类型不合符预期结果的时候则会出现错误提示
 
@@ -17,7 +17,7 @@
 - any（任意类型）
 - null 和 undefined 类型
 - void 类型
-- never 类型
+- never 类型[一般用于报错]
 - object 对象类型
 
 ### [#](https://vue3js.cn/interview/typescript/data_type.html#boolean)boolean
