@@ -107,3 +107,55 @@ express-session中的另外一个十分有用的参数是rolling，这个参数�
 学习nodejs开发网站肯定要学习express框架，学习express框架，肯定绕不过session登陆的设置，而如果对于一些刚刚接触网站登陆设置的新手来说，express-session这个npm包是个不错的选择。
 
 这篇文章不算是入门文章，只能算是填坑文章，只有踩到这个坑的同学才会深有感触，但是文章中关于session的存储方式，验证码机制，相信对大家来说还是很有帮助的。
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+nodejs热更新：nodemon
+
+-------------------------------------------------------------------------
+
+##### 鉴权
+
+node中的核心模块----crypto提供加密解密
+
+node获取响应头Authorization的方法：res.setHeader("Access-Control-Expose-Headers", "Authorization");
+
+![image-20240412102647577](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240412102647577.png)
+
+![image-20240412102908504](C:\Users\liqian\AppData\Roaming\Typora\typora-user-images\image-20240412102908504.png)
+
+##### mysql
+
+关于mysql语句，最好先在数据库【Navicat Premium】中写好执行准确后再在代码里调试。
+
+###### 可以选择对应语句执行
+
+select * from task 
+
+select * from category 
+
+###### 联表查询分组
+
+select ca.id, ca.name, count(ta.id) as 'count'
+from category ca inner join task ta on ca.id = ta.category_id 
+where ca.user_id = 1
+group by ca.id, ca.name 
+
+
+
+SELECT id,user_id,category_id,name,description,create_time,update_time,run FROM task WHERE id=?
+
+INSERT INTO task ( user_id, category_id, name, description, create_time, update_time ) VALUES ( ?, ?, ?, ?, ?, ? ) 
+
+DELETE FROM task_label WHERE (task_id = ?) 
+
+INSERT INTO task_label ( task_id, label_id, create_time, update_time ) VALUES ( ?, ?, ?, ? ) 
+
+
+
+SELECT id,user_id,category_id,name,description,create_time,update_time,run FROM task WHERE id=191
+INSERT INTO task ( user_id, category_id, name, description, create_time, update_time ) VALUES ( 23, 157, "react", "", NOW(), NOW() )
+
+DELETE FROM task_label WHERE (task_id = 191) 
+
+INSERT INTO task_label ( task_id, label_id, create_time, update_time ) VALUES (191, 2, NOW(), NOW()  ) 
