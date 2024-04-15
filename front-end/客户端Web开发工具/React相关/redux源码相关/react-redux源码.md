@@ -78,7 +78,7 @@ createStore：Redux用来创建store的核心方法，返回一个对象，包�
 
 connect：用来将state和dispatch注入给需要的组件，返回一个新组件，他其实是个高阶组件
 
-所以React-Redux核心其实就两个API，而且两个都是组件，作用还很类似，都是往组件里面注入参数，Provider是往根组件注入store，connect是往需要的组件注入state和dispatch。
+所以React-Redux核心其实就两个API，而且两个都是组件，作用还很类似，都是往组件里面注入参数，Provider是往根组件注入store，connect是往需要的组件提供state和dispatch。
 
 在手写之前我们先来思考下，加入没有这两个API，只用Redux可以吗？当然是可以的！其实我们用Redux的目的不就是希望用它将整个应用的状态都保存下来，每次操作只用dispatch action去更新状态，然后ui就自动更新了吗？那我从根组件开始，每一级都把store传下去不就行了吗？每个子组件需要读取状态的时候，直接用store.getState()就行了，更新状态的时候就store.dispatch，这样其实也能达到目的。但是如果这样写，子组件如果嵌套层数很多，每一集都需要手动传入store，比较麻烦，所以最好可以将store全局的注入组件树，而不需要一层层作为props传递，这个东西就是Provider！而且如果每个组件都独立依赖Redux会破坏React的数据流向。
 
