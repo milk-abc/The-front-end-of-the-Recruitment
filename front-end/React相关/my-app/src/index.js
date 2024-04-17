@@ -1,6 +1,6 @@
-// import { useReducer, useState, useMemo, useCallback } from "./schedule";
-// import React from "./react";
-// import ReactDOM from "./react-dom";
+import { useReducer, useState, useMemo, useCallback } from "./schedule";
+import React from "./react";
+import ReactDOM from "./react-dom";
 // let style = { border: "3px solid red", margin: "5px", padding: "0 5px" };
 // let element1 = (
 //   <div id="A1" style={style}>
@@ -91,42 +91,42 @@
 //   <ClassCounter name="计数器" />,
 //   document.getElementById("root")
 // );
-// function reducer(state, action) {
-//   switch (action.type) {
-//     case "ADD":
-//       return { count: state.count + 1 };
-//     default:
-//       return state;
-//   }
-// }
+function reducer(state, action) {
+  switch (action.type) {
+    case "ADD":
+      return { count: state.count + 1 };
+    default:
+      return state;
+  }
+}
 /**
  * 每个函数组件都有自己的fiber，每个fiber都有自己的hook，每个hook都有自己的state和updateQueue
  * @returns
  */
-// function FunctionCounter() {
-//   const [countState, dispatch] = useReducer(reducer, { count: 0 });
-//   const [numberState, setNumberState] = useState({ number: 0 });
-//   return (
-//     <div>
-//       <div id="counter1">
-//         <span>{numberState.number}</span>
-//         <button
-//           onClick={() => setNumberState({ number: numberState.number + 1 })}
-//         >
-//           加1
-//         </button>
-//       </div>
-//       <div id="counter2">
-//         <span>{countState.count}</span>
-//         <button onClick={() => dispatch({ type: "ADD" })}>加1</button>
-//       </div>
-//     </div>
-//   );
-// }
-// ReactDOM.render(
-//   <FunctionCounter name="计数器" />,
-//   document.getElementById("root")
-// );
+function FunctionCounter() {
+  const [countState, dispatch] = useReducer(reducer, { count: 0 });
+  const [numberState, setNumberState] = useState({ number: 0 });
+  return (
+    <div>
+      <div id="counter1">
+        <span>{numberState.number}</span>
+        <button
+          onClick={() => setNumberState({ number: numberState.number + 1 })}
+        >
+          加1
+        </button>
+      </div>
+      <div id="counter2">
+        <span>{countState.count}</span>
+        <button onClick={() => dispatch({ type: "ADD" })}>加1</button>
+      </div>
+    </div>
+  );
+}
+ReactDOM.render(
+  <FunctionCounter name="计数器" />,
+  document.getElementById("root")
+);
 //-------------------------------------------------------------------
 // let lastStates = [];
 // let index = 0;
@@ -316,76 +316,76 @@
 // }
 // render();
 //-------------------------------------------------------------------------------------------
-import React from "react";
-import ReactDOM from "react-dom";
-let lastRef;
-function useRef(initialRef) {
-  lastRef = lastRef || initialRef;
-  return {
-    current: lastRef,
-  };
-}
-let lastDependencies;
-function useEffect(callback, dependencies) {
-  //执行栈->微任务->渲染->宏任务
-  //为了实现渲染后执行回调，需要将回调放在宏任务中
-  if (lastDependencies) {
-    let changed = !dependencies.every(
-      (item, index) => item == lastDependencies[index]
-    );
-    if (changed) {
-      setTimeout(callback);
-      lastDependencies = dependencies;
-    }
-  } else {
-    setTimeout(callback);
-    lastDependencies = dependencies;
-  }
-}
-let lastLayoutDependencies;
-function useLayoutEffect(callback, dependencies) {
-  //执行栈->微任务->渲染->宏任务
-  //为了实现渲染前执行回调，需要将回调放在微任务中
-  if (lastLayoutDependencies) {
-    let changed = !dependencies.every(
-      (item, index) => item == lastLayoutDependencies[index]
-    );
-    if (changed) {
-      // Promise.resolve().then(callback);
-      queueMicrotask(callback);
-      lastLayoutDependencies = dependencies;
-    }
-  } else {
-    // Promise.resolve().then(callback);
-    queueMicrotask(callback);
-    lastLayoutDependencies = dependencies;
-  }
-}
-function Animation() {
-  //ref是一个对象，它有current属性，ref.current指向这个div的真实DOM元素
-  const ref = useRef();
-  //useEffect是在浏览器渲染完成后执行
-  useEffect(() => {
-    ref.current.style.transform = `translate(500px)`;
-    ref.current.style.transition = `all 500ms`;
-  });
-  //useLayoutEffect是在浏览器渲染前执行
-  // useLayoutEffect(() => {
-  //   ref.current.style.transform = `translate(500px)`;
-  //   ref.current.style.transition = `all 500ms`;
-  // });
-  let style = {
-    width: "100px",
-    height: "100px",
-    background: "red",
-  };
-  return (
-    <div style={style} ref={ref}>
-      内容
-    </div>
-  );
-}
-function render() {
-  ReactDOM.render(<Animation />, document.getElementById("root"));
-}
-render();
+// import React from "react";
+// import ReactDOM from "react-dom";
+// let lastRef;
+// function useRef(initialRef) {
+//   lastRef = lastRef || initialRef;
+//   return {
+//     current: lastRef,
+//   };
+// }
+// let lastDependencies;
+// function useEffect(callback, dependencies) {
+//   //执行栈->微任务->渲染->宏任务
+//   //为了实现渲染后执行回调，需要将回调放在宏任务中
+//   if (lastDependencies) {
+//     let changed = !dependencies.every(
+//       (item, index) => item == lastDependencies[index]
+//     );
+//     if (changed) {
+//       setTimeout(callback);
+//       lastDependencies = dependencies;
+//     }
+//   } else {
+//     setTimeout(callback);
+//     lastDependencies = dependencies;
+//   }
+// }
+// let lastLayoutDependencies;
+// function useLayoutEffect(callback, dependencies) {
+//   //执行栈->微任务->渲染->宏任务
+//   //为了实现渲染前执行回调，需要将回调放在微任务中
+//   if (lastLayoutDependencies) {
+//     let changed = !dependencies.every(
+//       (item, index) => item == lastLayoutDependencies[index]
+//     );
+//     if (changed) {
+//       // Promise.resolve().then(callback);
+//       queueMicrotask(callback);
+//       lastLayoutDependencies = dependencies;
+//     }
+//   } else {
+//     // Promise.resolve().then(callback);
+//     queueMicrotask(callback);
+//     lastLayoutDependencies = dependencies;
+//   }
+// }
+// function Animation() {
+//   //ref是一个对象，它有current属性，ref.current指向这个div的真实DOM元素
+//   const ref = useRef();
+//   //useEffect是在浏览器渲染完成后执行
+//   useEffect(() => {
+//     ref.current.style.transform = `translate(500px)`;
+//     ref.current.style.transition = `all 500ms`;
+//   });
+//   //useLayoutEffect是在浏览器渲染前执行
+//   // useLayoutEffect(() => {
+//   //   ref.current.style.transform = `translate(500px)`;
+//   //   ref.current.style.transition = `all 500ms`;
+//   // });
+//   let style = {
+//     width: "100px",
+//     height: "100px",
+//     background: "red",
+//   };
+//   return (
+//     <div style={style} ref={ref}>
+//       内容
+//     </div>
+//   );
+// }
+// function render() {
+//   ReactDOM.render(<Animation />, document.getElementById("root"));
+// }
+// render();
