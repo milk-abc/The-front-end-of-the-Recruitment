@@ -103,30 +103,30 @@ function reducer(state, action) {
  * 每个函数组件都有自己的fiber，每个fiber都有自己的hook，每个hook都有自己的state和updateQueue
  * @returns
  */
-// function FunctionCounter() {
-//   const [countState, dispatch] = useReducer(reducer, { count: 0 });
-//   const [numberState, setNumberState] = useState({ number: 0 });
-//   return (
-//     <div>
-//       <div id="counter1">
-//         <span>{numberState.number}</span>
-//         <button
-//           onClick={() => setNumberState({ number: numberState.number + 1 })}
-//         >
-//           加1
-//         </button>
-//       </div>
-//       <div id="counter2">
-//         <span>{countState.count}</span>
-//         <button onClick={() => dispatch({ type: "ADD" })}>加1</button>
-//       </div>
-//     </div>
-//   );
-// }
 function FunctionCounter() {
-  console.log("render");
-  return <div>1234</div>;
+  const [countState, dispatch] = useReducer(reducer, { count: 0 });
+  const [numberState, setNumberState] = useState({ number: 0 });
+  return (
+    <div>
+      <div id="counter1">
+        <span>{numberState.number}</span>
+        <button
+          onClick={() => setNumberState({ number: numberState.number + 1 })}
+        >
+          加1
+        </button>
+      </div>
+      <div id="counter2">
+        <span>{countState.count}</span>
+        <button onClick={() => dispatch({ type: "ADD" })}>加1</button>
+      </div>
+    </div>
+  );
 }
+// function FunctionCounter() {
+//   console.log("render");
+//   return <div>1234</div>;
+// }
 ReactDOM.render(
   <FunctionCounter name="计数器" />,
   document.getElementById("root")
