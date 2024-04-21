@@ -1,17 +1,14 @@
-let str = "aaaabbbcccty";
-let clearWord = function (str) {
-  let stack = [];
-  for (let i = 0; i < str.length; i++) {
-    while (
-      i < str.length &&
-      stack[stack.length - 1] === "a" &&
-      str[i] === "c"
-    ) {
-      stack.pop();
-      i++;
-    }
-    if (str[i] !== "b") {
-      stack.push(str[i]);
-    }
-  }
-};
+/**
+ * forEach和for循环的效率
+ */
+const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+
+const list = Array.from(Array(10000), (v, k) => ({ num: random(0, 100) }));
+let a;
+// console.time("...");
+// a = [...list];
+// console.timeEnd("...");
+
+console.time("object.assign");
+a = Object.assign([], list);
+console.timeEnd("object.assign");
