@@ -1,2 +1,2 @@
-# The-front-end-of-the-2022-Autumn-Recruitment
-2022届秋招前端面经
+# The-front-end-of-the-Recruitment
+前端面经总结
