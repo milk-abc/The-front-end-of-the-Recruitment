@@ -111,15 +111,19 @@ function FunctionCounter() {
       <div id="counter1">
         <span>{numberState.number}</span>
         <button
-          onClick={() => setNumberState({ number: numberState.number + 1 })}
+          onClick={() => {
+            setNumberState({ number: numberState.number + 1 });
+            setNumberState({ number: numberState.number + 1 });
+            setNumberState({ number: numberState.number + 1 });
+          }}
         >
           加1
         </button>
       </div>
-      <div id="counter2">
+      {/* <div id="counter2">
         <span>{countState.count}</span>
         <button onClick={() => dispatch({ type: "ADD" })}>加1</button>
-      </div>
+      </div> */}
     </div>
   );
 }

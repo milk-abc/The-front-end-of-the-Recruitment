@@ -31,9 +31,9 @@ export function observer(value) {
 }
 export class Dep {
   constructor() {
-    this.deppend = [];
+    this.dep = [];
   }
   add() {
-    this.deppend.push(Dep.target);
+    this.dep.push(Dep.target);
   }
 }
