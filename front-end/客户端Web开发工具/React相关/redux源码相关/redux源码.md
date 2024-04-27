@@ -565,41 +565,5 @@ const temp = (...args) => func1(fun2(...args))
 > store.dispatch({ type: "PUT_RICE", count: 1 });
 > store.dispatch({ type: "PUT_RICE", count: 1 });
 > store.dispatch({ type: "TAKE_RICE", count: 1 });
-> 
 > ```
->
 > 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-https://www.bilibili.com/video/BV1zU4y1f74E/?spm_id_from=333.337.search-card.all.click&vd_source=d8dd13cb220fa6354c7b6f79b3a210ee
-
-https://dennisgo.cn/Articles/React/Redux.html

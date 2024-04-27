@@ -6,3 +6,4 @@ flex-flow
 justify-content
 align-items
 align-content
+flex: flex-grow flex-shrink flex-basis
