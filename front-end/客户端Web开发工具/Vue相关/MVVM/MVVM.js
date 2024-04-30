@@ -256,6 +256,7 @@ class Vue {
   proxyVm(data) {
     for (let key in data) {
       //{school:{name,age}}
+      //this是vm，data是vm.$data
       Object.defineProperty(this, key, {
         get() {
           return data[key]; //实现可以通过vm获取到对应的内容
