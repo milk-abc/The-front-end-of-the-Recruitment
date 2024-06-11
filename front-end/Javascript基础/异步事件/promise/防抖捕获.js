@@ -7,20 +7,20 @@ function debounce(func, timeout) {
         try {
           const value = func.apply(this, arguments);
           resolve(value);
-        } catch (e) {
-          reject(e);
+        } catch (err) {
+          reject(404);
         }
       }, timeout);
     });
   };
 }
+
 const test = () => {
   console.log("hhh");
   throw new Error("error");
   return 123;
 };
-const debouncePromise = debounce(test, 100000);
-debouncePromise().then(
-  (value) => console.log(value),
-  (error) => console.log("123", error)
-);
+const debouncePromise = debounce(test, 1000);
+debouncePromise()
+  .then((value) => console.log(value))
+  .catch((err) => console.log("123", err));

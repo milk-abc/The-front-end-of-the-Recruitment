@@ -49,3 +49,45 @@ console.log(
 //判断是否符合电话号码格式
 let tel = "020-9999999";
 console.log(/010|020\-\d{7,8}/.test(tel));
+
+String.prototype.render = function (data) {
+  return this.replace(/{{(.+?)}}/g, (match) => {
+    if ((match = match.substring(2, match.length - 2).trim()) == "") {
+      return "";
+    } else if (match.startsWith("#")) {
+      return eval(match.substring(1));
+    } else {
+      return data[match] ? data[match] : "";
+    }
+  });
+};
+
+const data = {
+  name: "小明",
+  age: 16,
+  school: "第三中学",
+  classroom: "教室2",
+};
+
+console.log(
+  "{{ name }} 今年 {{ age }} 岁，就读于 {{ school }} 今天在 {{ classroom }} 上课，{{ name }} {{ #data.age >= 18 ? '成年了' : '未成年' }}".render(
+    data
+  )
+);
+const str =
+  "{{ name }} 今年 {{ age }} 岁，就读于 {{ school }} 今天在 {{ classroom }} 上课，{{ name }} {{ #data.age >= 18 ? '成年了' : '未成年' }}";
+//检测是否匹配，为true
+console.log(/{{(.+?)}}/g.test(str));
+const reg = /{{(.+?)}}/g;
+//将结果一个一个匹配出来放到arr中
+/**
+ * hhh {{ name }}
+hhh {{ age }}
+hhh {{ school }}
+hhh {{ classroom }}
+hhh {{ name }}
+hhh {{ #data.age >= 18 ? '成年了' : '未成年' }}
+ */
+while ((arr = reg.exec(str)) !== null) {
+  console.log("hhh", arr[0]);
+}

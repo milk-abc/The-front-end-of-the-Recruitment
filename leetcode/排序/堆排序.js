@@ -18,7 +18,7 @@ let buildheap = function (arr) {
 let heapify = function (arr, i, len) {
   let left = 2 * i + 1;
   let right = 2 * i + 2;
-  largest = i;
+  let largest = i;
   if (left < len && arr[left] > arr[largest]) {
     largest = left;
   }

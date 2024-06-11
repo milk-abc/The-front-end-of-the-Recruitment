@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <style></style>
+  <body>
+    <input id="input" />
+  </body>
+  <script>
+    const debounce = (fn, time) => {
+      let timer = null;
+      return function () {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn();
+        }, time);
+      };
+    };
+    const throttle = (fn, time) => {
+      let timer = null;
+      return function () {
+        if (timer) {
+          return;
+        }
+        timer = setTimeout(() => {
+          fn();
+          timer = null;
+        }, time);
+      };
+    };
+    const test = () => {
+      console.log("input");
+    };
+    const debounceInput = debounce(test, 1000);
+    const throttleInput = throttle(test, 1000);
+    // document.getElementById("input").addEventListener("input", debounceInput);
+    document.getElementById("input").addEventListener("input", throttleInput);
+  </script>
+</html>

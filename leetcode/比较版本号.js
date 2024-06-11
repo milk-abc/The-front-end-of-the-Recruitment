@@ -49,3 +49,21 @@ var compareVersion = function (version1, version2) {
 };
 let ans = compareVersion("1", "1.0.1");
 console.log("ans", ans);
+function sortVersions(versions) {
+  return versions.sort((a, b) => {
+    const aVersion = a.split(".").map((num) => parseInt(num));
+    const bVersion = b.split(".").map((num) => parseInt(num));
+    const len = Math.max(aVersion.length, bVersion.length);
+    for (let i = 0; i < len; i++) {
+      const aNum = aVersion[i] || 0;
+      const bNum = bVersion[i] || 0;
+      if (aNum > bNum) {
+        return 1;
+      } else if (aNum < bNum) {
+        return -1;
+      }
+    }
+    return 0;
+  });
+}
+console.log(sortVersions(["2.1.0.1", "0.402.1", "10.2.1", "5.1.2", "1.0.4.5"]));

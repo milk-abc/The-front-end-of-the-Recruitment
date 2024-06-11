@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app" style="border: 1px solid red"></div>
+    <script>
+      function onclick() {
+        const myDiv = document.getElementById("app");
+        const childs = myDiv.querySelectorAll("*");
+        childs.forEach((item) => {
+          item.innerHTML = "red";
+        });
+
+        console.log("click");
+      }
+      document.getElementById("app").addEventListener("click", onclick);
+      window.onload = function () {
+        var a = document.getElementById("app");
+        for (let i = 0; i < 500000; i++) {
+          const newElement = document.createElement("div");
+          newElement.innerHTML = "hhh";
+          a.appendChild(newElement);
+        }
+      };
+    </script>
+  </body>
+</html>

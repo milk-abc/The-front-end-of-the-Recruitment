@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    .parent {
+      display: flex;
+    }
+  </style>
+  <body>
+    <input id="input" />
+  </body>
+  <script>
+    const debounce = (fn, time) => {
+      /**
+       * 多次触发只触发最后一次
+       */
+      let timer = null;
+      return function (...args) {
+        if (timer) {
+          clearTimeout(timer);
+        }
+        timer = setTimeout(() => {
+          fn(...args);
+        }, time);
+      };
+    };
+    const test = () => {
+      console.log("input");
+    };
+    const debounceInput = debounce(test, 500);
+    document.getElementById("input").addEventListener("input", debounceInput);
+  </script>
+</html>

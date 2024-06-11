@@ -1,0 +1,5 @@
+一个立方体需要定义八个点的坐标和24个纹理坐标
+
+BufferGeometry
+
+包括顶点位置position、面片索引indices、法向量normal、颜色rgba
