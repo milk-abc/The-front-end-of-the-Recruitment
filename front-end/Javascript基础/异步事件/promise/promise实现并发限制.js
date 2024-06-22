@@ -52,6 +52,7 @@ class PromisePoolDynamic {
         this.checkQueue();
       })
       .catch((error) => {
+        
         this.runningCount -= 1;
         taskWithCallback.reject(error);
         this.checkQueue();

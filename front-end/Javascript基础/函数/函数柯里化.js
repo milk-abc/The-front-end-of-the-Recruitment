@@ -7,6 +7,25 @@
 //每一个函数都可以被看做独立单元，很有利于进行单元测试和debug，以及模块化组合
 //函数式编程不需要考虑"死锁"（deadlock），因为它不修改变量，所以根本不存在"锁"线程的问题。
 //不必担心一个线程的数据，被另一个线程修改，可以把工作分摊到多个线程，部署"并发编程"。
+function curry(fn) {
+  return _curry.call(this, fn);
+}
+function _curry(fn, ...args) {
+  return function (...params) {
+    let _args = [...args, ...params];
+    if (_args.length >= len) {
+      return fn.apply(this, _args);
+    } else {
+      return _curry.call(this, fn, ..._args);
+    }
+  };
+}
+let func = (a, b, c, d, e) => {
+  console.log(a, b, c, d, e);
+};
+let _fn = curry(func);
+_fn(1, 2, 3, 4, 5);
+_fn(1)(2, 3)(4, 5);
 function add(a, b, c) {
   return a + b + c;
 }
