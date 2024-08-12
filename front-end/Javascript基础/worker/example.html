@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body></body>
+  <script>
+    const myWorker = new Worker("worker.js");
+    myWorker.onmessage = function (e) {
+      console.log("Message received from worker", e.data);
+    };
+    myWorker.postMessage(100000);
+  </script>
+</html>

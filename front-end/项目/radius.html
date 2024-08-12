@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <style>
+    .adaptive-circle {
+      width: 50vmin; /* 使用vmin单位，它取vw和vh中的较小值，使得圆的大小随窗口大小变化 */
+      height: 50vmin;
+      background-color: #ff0000; /* 圆的颜色 */
+      border-radius: 50%; /* 设置为圆形 */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); /* 居中显示 */
+    }
+  </style>
+  <body>
+    <div class="adaptive-circle"></div>
+  </body>
+</html>

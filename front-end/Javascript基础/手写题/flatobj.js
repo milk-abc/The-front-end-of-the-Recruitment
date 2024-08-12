@@ -1,6 +1,12 @@
 // The TestCase is shown below
-// Input : 1 2
-// Output : 3
+/**
+ * output
+ * 'a.b':1,
+ * 'a.c':2,
+ * 'd[0]':5,
+ * 'd[1]':6,
+ * 'e[]':null
+ */
 const obj = {
   a: { b: 1, c: 2, g: { h: 3 } },
   d: [5, 6],
