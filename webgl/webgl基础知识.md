@@ -310,7 +310,7 @@ var count = 6;
 gl.drawArrays(primitiveType, offset, count);
 ```
 
-
+旋转矩阵：[0,1]
 
 
 
