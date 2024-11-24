@@ -47,5 +47,68 @@
 // console.log("current6", historyFn.getCurrent());
 // historyFn.perform("4");
 // console.log("current7", historyFn.getCurrent());
+// class PubSub{
+// 	constructor(){
 
+// 	}
+// }
+// class Publisher{
 
+// }
+// class Subscriber{
+
+// }
+// const TYPE_A="music";
+// const TYPE_B="movie";
+// const TYPE_C="novel";
+
+// const pubsub=new PubSub();
+// const publisherA=new Publisher('publisherA',pubsub);
+// publisherA.publish(TYPE_A,"music");
+// publisherA.publish(TYPE_B,"movie");
+// const subscriberA=new Subscriber('subscriberA',pubsub);
+// subscriberA.subscribe(TYPE_A,function(data){
+//     console.log("subscriberA",data);
+// });
+function promiseLimit(axios) {
+  let runningCount = 0;
+  const limit = 2;
+  const queue = [];
+  return function (url) {
+    function getTask() {
+      return async () => {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
+        return new Date();
+      };
+      // return new Promise((resolve, reject) => {
+      // 	axios.get(url).then(res => {
+      // 		resolve(res.data);
+      // 	}).catch(err => {
+      // 		reject(err);
+      // 	})
+      // })
+    }
+    function addTask(task) {
+      return new Promise((resolve, reject) => {
+        const taskWithCallbacks = { task, resolve, reject };
+
+        runningCount++;
+        if (runningCount < limit) {
+          axios.get(url).then((res) => {
+						
+            resolve(res);
+            runningCount--;
+            if (queue.length > 0) {
+              let nextUrl = queue.shift();
+              axios.get(nextUrl).then((res) => {});
+            }
+          });
+        } else {
+          queue.push(url);
+        }
+      });
+    }
+  };
+}
