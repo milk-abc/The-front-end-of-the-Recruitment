@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        .green p { color: green; }
+        .red p { color: red; }
+        /* 同等权重后面的会覆盖前面的 */
+    </style>
+    <body>
+        <div class="red">
+            <div class="green">
+                <p>1. 颜色是？</p>
+            </div>
+        </div>
+        <div class="green">
+            <div class="red">
+                <p>2. 颜色是？</p>
+            </div>
+        </div>
+    </body>
+</html>

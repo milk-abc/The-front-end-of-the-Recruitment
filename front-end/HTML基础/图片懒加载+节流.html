@@ -1,0 +1,59 @@
+<!-- left=i*(itemLeft+padding) -->
+<!DOCTYPE html>
+<html>
+  <style>
+    img {
+      width: 400px;
+      /* height: 400px; */
+      margin-bottom: 50px;
+      display: block;
+    }
+  </style>
+  <body>
+    <img src="default.png" data-src="https://i.pinimg.com/236x/0f/41/f6/0f41f6073f27a4c8baf57d26f76b4b9a.jpg" alt="">
+    <img src="default.png" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="default.png" data-src="http://ww1.sinaimg.cn/large/006y8mN6gw1fa7kaed2hpj30sg0l9q54.jpg" alt="">
+    <img src="default.png" data-src="http://ww1.sinaimg.cn/large/006y8mN6gw1fa7kaed2hpj30sg0l9q54.jpg" alt="">
+    <img src="default.png" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="default.png" data-src="https://i.pinimg.com/236x/7f/24/8c/7f248c9e18abe79de0d6c79617e03361.jpg" alt="">
+    <img src="default.png" data-src="https://i.pinimg.com/236x/6a/b0/d9/6ab0d93ee045cde3a25b5a0a22cd6435.jpg" alt="">
+    <img src="default.png" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="default.png" data-src="http://ww1.sinaimg.cn/large/006y8mN6gw1fa7kaed2hpj30sg0l9q54.jpg" alt="">
+    <img src="default.png" data-src="http://ww4.sinaimg.cn/large/006y8mN6gw1fa5obmqrmvj305k05k3yh.jpg" alt="">
+    <img src="default.png" data-src="https://i.pinimg.com/236x/44/cb/7f/44cb7fc19131e851f639f6e24acbdec6.jpg" alt="">
+    </div>
+    <script>
+      var n = 0;
+      var img = document.getElementsByTagName("img");
+      var num = img.length;
+      lazyload();//第一次用个lazyload不用监听滑动就可以加载出第一张
+      window.onscroll = lazyload;
+      function lazyload() {
+        for (var i = n; i < num; i++) {
+          if (getClient().height + getScrollTop() >= img[i].offsetTop) {
+            if (img[i].getAttribute("src") === "default.png") {
+              img[i].src = img[i].getAttribute("data-src");
+            }
+            n = i + 1;//优化，让其每次都从已加载好的从下继续加载
+          }
+        }
+      }
+      //兼容
+      function getClient() {
+        return {
+          width:
+            window.innerWidth ||
+            document.documentElement.clientWidth ||
+            document.body.clientWidth,
+          height:
+            window.innerHeight ||
+            document.documentElement.clientHeight ||
+            document.body.clientHeight,
+        };
+      }
+      function getScrollTop() {
+        return window.pageYOffset || document.documentElement.scrollTop;
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+<!-- 1.如果location.hash发生了变化，那么浏览器地址栏url会发生变化，而且浏览器会产生1个历史记录。
+
+2.如果location.hash发生了变化，会产生一个hashchange事件，我们可以处理这个事件。 -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div class="parent">
+      <a href="/index.html" class="spa">1</a>
+      <a href="/index.html" class="spa">2</a>
+      <a href="/index.html" class="spa">3</a>
+      <a href="/index.html" class="spa">4</a>
+    </div>
+    <script>
+      //监听点击事件改变路由
+      document.querySelectorAll(".spa").forEach((item) => {
+        item.addEventListener(
+          "click",
+          (e) => {
+            e.preventDefault();
+            let link = item.textContent;
+            location.hash = link;
+          },
+          false
+        );
+      });
+      //监听路由改变view
+      window.addEventListener(
+        "hashchange",
+        (e) => {
+          console.log({
+            location: location.href,
+            hash: location.hash,
+          });
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

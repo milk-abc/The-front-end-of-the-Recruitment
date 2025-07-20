@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<body>
+	<div>
+		<input id='box'>
+	</div>
+</body>
+<script>
+	let box=document.getElementById('box');
+	function throttle(fn, delay) {
+    let last = new Date(),
+      timer = null;
+    return function (...args) {
+      let now = new Date();
+      if (now - last < delay) {
+        clearTimeout(timer);
+        timer=setTimeout(function () {
+          last = now;
+          fn.apply(this, args);
+        }, delay);
+      } else {
+        last = now;
+        fn.apply(this, args);
+      }
+    };
+}
+
+	function fn(name){
+		console.log(name)
+	}
+	let throttlefn=throttle(fn,500);
+	box.addEventListener('input',e=>{throttlefn('li')},false)
+</script>
+</html>
+

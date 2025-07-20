@@ -1,0 +1,43 @@
+<!-- JS求页面中出现最多次数的标签，并求出出现次数 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>求出页面中出现次数最多的标签和次数</title>
+  </head>
+  <body>
+    <span></span>
+    <span></span>
+    <span></span>
+    <div>
+      <div>sdf</div>
+    </div>
+    <div></div>
+  </body>
+  <script>
+    window.onload = function () {
+      let map = {};
+      let res = {};
+      let ans = 0;
+      function dfsnode(node) {
+        if (node.nodeType === 1) {
+          let tagName = node.nodeName;
+          map[tagName] = map[tagName] ? map[tagName] + 1 : 1;
+          ans = Math.max(ans, map[tagName]);
+        }
+        let children = node.childNodes;
+        for (let i = 0; i < children.length; i++) {
+          dfsnode(children[i]);
+        }
+      }
+      dfsnode(document.body);
+      for (const [key, value] of Object.entries(map)) {
+        if (value === ans) {
+          res[key] = value;
+        }
+      }
+      console.log(res);
+    };
+  </script>
+</html>

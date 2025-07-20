@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    <div class="parent">
+      <a href="/index.html" class="spa">1</a>
+      <a href="/index.html" class="spa">2</a>
+      <a href="/index.html" class="spa">3</a>
+      <a href="/index.html" class="spa">4</a>
+    </div>
+    <script>
+      //监听点击事件改变路由
+      document.querySelectorAll(".spa").forEach((item) => {
+        item.addEventListener(
+          "click",
+          (e) => {
+            e.preventDefault();
+            let link = item.textContent;
+            if (window.history && history.pushState) {
+              window.history.pushState({ name: "history" }, link, link);
+            } else {
+              //不支持，安装polyfill补丁包
+            }
+          },
+          false
+        );
+      });
+      //监听路由改变view
+      window.addEventListener(
+        "popstate",
+        (e) => {
+          console.log({
+            location: location.href,
+            state: e.state,
+          });
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

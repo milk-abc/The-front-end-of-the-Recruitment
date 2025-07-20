@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>dom xss</title>
+  </head>
+  <body>
+    <div id="content"></div>
+    <input type="text" id="text" value="" style="width: 500px" />
+    <input type="button" id="submit" value="write" />
+  </body>
+  <script>
+    //onclick=alert(/xss/)
+    document.getElementById("submit").onclick = function () {
+      var str = document.getElementById("text").value;
+      document.getElementById(
+        "content"
+      ).innerHTML = `<a href='' ${str}>testLink</a>`;
+    };
+  </script>
+</html>

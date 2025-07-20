@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- 在IE浏览器中不生效 -->
+    <!-- <meta http-equiv="Cache-Control" content="no-cache" /> -->
+  </head>
+  <body>
+    <button>发送请求</button>
+    <div></div>
+  </body>
+  <script>
+    const btn = document.getElementsByTagName("button")[0];
+    const div = document.getElementsByTagName("div")[0];
+    btn.onclick = function () {
+      const xhr = new XMLHttpRequest();
+      xhr.open("get", "http://127.0.0.01:3000/home");
+      xhr.setRequestHeader("Cache-Control", "no-cache");
+      xhr.setRequestHeader("Pragma", "no-cache");
+      xhr.send();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+            div.innerHTML = xhr.responseText;
+          }
+        }
+      };
+    };
+  </script>
+</html>
